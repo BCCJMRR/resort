@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover Makaloka Beach Resort in Tiwasan, Catarman, Liloan, Cebu, Philippines. Contact us for cottage rates and inquiries.">
+  <meta name="theme-color" content="#075985">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Makaloka Resort">
+  <title>Makaloka Beach Resort | Your Escape to the Beach</title>
+  <style>
+    :root{--navy:#073b57;--blue:#087eaa;--aqua:#dff7f7;--sand:#fff8ec;--ink:#173746;--white:#fff}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.6;background:#fff}
+    a{color:inherit}
+    /* Soft seashell artwork on light sections; original resort photos remain unchanged. */
+    section:not(.hero){position:relative;isolation:isolate;overflow:hidden}
+    section:not(.hero)::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.68;
+      background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='150' viewBox='0 0 140 150'%3E%3Cg fill='none' stroke='%23c6a77b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='.72'%3E%3Cpath d='M19 52 C5 42 10 24 22 20 C34 24 39 42 25 52 Z M22 22 L22 49 M16 27 L22 48 M28 27 L22 48'/%3E%3Cpath d='M87 111 C69 108 66 91 79 83 C91 76 106 89 101 101 C98 108 93 111 87 111 Z M79 85 L87 108 M86 82 L87 108 M94 84 L87 108'/%3E%3C/g%3E%3Cg fill='none' stroke='%2388cbd4' stroke-width='2' opacity='.7'%3E%3Cpath d='M117 20 C111 29 104 36 104 44 C104 53 111 58 118 58 C126 58 132 52 132 44 C132 36 124 29 117 20 Z M117 28 L117 54 M109 38 L117 54 M125 38 L117 54'/%3E%3Cpath d='M28 119 q10 -10 20 0 q-10 13 -20 0 Z M28 119 l20 0 M33 114 l5 10 M42 114 l-4 10'/%3E%3C/g%3E%3C/svg%3E");
+      background-position:left 12px top 16px,right 12px bottom 10px;background-repeat:repeat-y,repeat-y;background-size:140px 150px;}
+    section:not(.hero) > .container{position:relative;z-index:1}
+    @media(max-width:520px){section:not(.hero)::before{opacity:.38;background-size:96px 110px;background-position:left 4px top 10px,right 4px bottom 8px}}
+    .booking-card,.qr-card,.card,.rate-card{position:relative;z-index:1}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);box-shadow:0 2px 15px #063b5714}
+    .nav{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:13px 22px}
+    .brand{font-size:1.25rem;font-weight:800;letter-spacing:.04em;color:var(--navy);text-decoration:none;line-height:1.1}
+    .brand span{display:block;font-size:.72rem;letter-spacing:.28em;color:var(--blue);margin-top:5px}
+    .navlinks{display:flex;align-items:center;gap:22px}
+    .navlinks a{text-decoration:none;font-weight:700;font-size:.88rem}
+    .navlinks a:hover{color:var(--blue)}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue);color:white!important;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:800;border:0;cursor:pointer;transition:.2s}
+    .button:hover{background:var(--navy);transform:translateY(-1px)}
+    .button.light{background:#fff;color:var(--navy)!important}
+    .hero{min-height:600px;display:grid;place-items:center;text-align:center;color:#fff;padding:85px 22px;background:linear-gradient(90deg,rgba(2,38,57,.55),rgba(2,38,57,.18)),url('images/resort-beachfront.jpg') center/cover}
+    .sound-toggle{position:absolute;right:22px;top:22px;z-index:2;border:1px solid rgba(255,255,255,.75);background:rgba(3,54,77,.62);color:#fff;border-radius:999px;padding:10px 15px;font-weight:700;cursor:pointer;backdrop-filter:blur(5px)}
+    .hero{position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:-18% -30%;z-index:0;pointer-events:none;background:repeating-linear-gradient(168deg,rgba(110,231,247,.10) 0px,rgba(110,231,247,.10) 2px,transparent 3px,transparent 25px),linear-gradient(180deg,rgba(0,160,195,.08),rgba(0,55,83,.20));background-size:100% 100%,100% 100%;animation:seaDrift 14s ease-in-out infinite alternate}
+    @keyframes seaDrift{0%{transform:translate3d(-2%,1%,0) skewY(-1deg);background-position:0 0,0 0}100%{transform:translate3d(2%,-1%,0) skewY(1deg);background-position:0 65px,0 0}}
+    .sound-toggle:hover{background:rgba(3,54,77,.85)}
+    .hero-inner{position:relative;z-index:1;max-width:820px;text-shadow:0 2px 16px #002b3c70}
+    .eyebrow{text-transform:uppercase;letter-spacing:.22em;font-size:.82rem;font-weight:800}
+    h1{font-size:clamp(2.8rem,7vw,5.7rem);line-height:1.02;margin:16px 0;font-family:Georgia,serif;font-weight:700}
+    .hero p{font-size:clamp(1rem,2vw,1.25rem);max-width:700px;margin:0 auto 27px}
+    .hero .location{font-size:.98rem;margin-top:20px}
+    section{padding:76px 22px}
+    .container{max-width:1120px;margin:auto}
+    .section-title{text-align:center;margin:0 auto 38px;max-width:720px}
+    .section-title .eyebrow{color:var(--blue)}
+    h2{font-size:clamp(2rem,4vw,3rem);font-family:Georgia,serif;color:var(--navy);line-height:1.15;margin:8px 0 14px}
+    .section-title p{margin:0;color:#526d78}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+    .about-image{min-height:370px;border-radius:24px;background:url('images/resort-lawn-and-sea.jpg') center/cover;box-shadow:18px 18px 0 var(--aqua)}
+    .about-copy h2{margin-top:0}
+    .about-copy p{color:#4b6570}
+    .features{background:linear-gradient(180deg,#effbfb,#fff)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .card{background:#fff;border:1px solid #e1eeee;border-radius:18px;padding:27px 24px;box-shadow:0 10px 30px #073b5708}
+    .icon{font-size:2rem;width:58px;height:58px;border-radius:50%;background:var(--aqua);display:grid;place-items:center;margin-bottom:15px}
+    .card h3{margin:0 0 8px;color:var(--navy)}
+    .card p{margin:0;color:#58717b}
+    .gallery-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .gallery-photo{border-radius:16px;background-position:center;background-size:cover;min-height:210px;box-shadow:0 8px 22px #073b5712}
+    .gallery-photo:first-child{grid-column:span 2;grid-row:span 2;min-height:434px}
+    .gallery-photo:nth-child(1){background-image:url('images/gallery-01-poolside-event.jpg')}
+    .gallery-photo:nth-child(2){background-image:url('images/gallery-02-seaside-pavilion.jpg')}
+    .gallery-photo:nth-child(3){background-image:url('images/gallery-03-cottages-night.jpg')}
+    .gallery-photo:nth-child(4){background-image:url('images/gallery-04-pool-float.jpg')}
+    .gallery-photo:nth-child(5){background-image:url('images/gallery-05-coffee-by-the-sea.jpg')}
+    .gallery-photo:nth-child(6){background-image:url('images/gallery-06-beachfront-cottages.jpg')}
+    .gallery-photo:nth-child(7){background-image:url('images/gallery-07-pool-evening.jpg')}
+    .gallery-photo:nth-child(8){background-image:url('images/gallery-08-seaside-dining.jpg')}
+    .gallery-photo:nth-child(9){background-image:url('images/gallery-09-sea-view-lawn.jpg')}
+    .gallery-photo:nth-child(10){background-image:url('images/gallery-10-cottage-at-night.jpg')}
+    .gallery-photo:nth-child(11){background-image:url('images/gallery-11-garden-hammock-new.jpg')}
+    .gallery-photo:nth-child(12){background-image:url('images/gallery-12-pool-and-palm-lawn.jpg')}
+    .gallery-photo:nth-child(13){background-image:url('images/gallery-13-seaside-pavilion-day.jpg')}
+    .gallery-photo:nth-child(14){background-image:url('images/gallery-14-seaside-picnic-benches.jpg')}
+    .gallery-photo:nth-child(15){background-image:url('images/gallery-15-oceanfront-lounge.jpg')}
+    .rates{background:var(--sand)}
+    .rate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .rate-card{background:white;border:1px solid #efe7d9;border-radius:18px;padding:27px;text-align:center}
+    .rate-card h3{color:var(--navy);margin:8px 0}
+    .rate-card p{color:#5e7077}
+    .note{font-size:.9rem;text-align:center;color:#6b777b;margin-top:20px}
+    .contact{background:linear-gradient(120deg,#063b57,#087eaa);color:white}
+    .contact h2,.contact .section-title p{color:white}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:stretch}
+    .contact-box{padding:30px;border-radius:20px;background:#ffffff12;border:1px solid #ffffff2e}
+    .contact-box h3{margin-top:0;font-size:1.35rem}
+    .contact-line{margin:15px 0}
+    .contact-line strong{display:block;margin-bottom:3px}
+    .contact a:not(.button){color:white}
+    .contact-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+    .map-placeholder{min-height:260px;border-radius:18px;background:linear-gradient(135deg,#d8f1e9,#b7e1df);color:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:25px}
+    footer{background:#042c41;color:#d6e8ed;text-align:center;padding:24px 18px;font-size:.9rem}
+    footer strong{color:#fff}
+    .smallprint{font-size:.82rem;opacity:.8;margin-top:8px}
+    .booking-section{background:linear-gradient(180deg,#effbfb,#fff)}
+    .booking-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:start}
+    .booking-card,.qr-card{background:#fff;border:1px solid #dcebec;border-radius:22px;padding:clamp(20px,4vw,34px);box-shadow:0 12px 32px #073b570b}
+    .booking-form{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}
+    .field label{font-size:.9rem;font-weight:800;color:var(--navy)}
+    .field input,.field select,.field textarea{width:100%;min-height:46px;border:1px solid #bfd4d8;border-radius:10px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}
+    .field textarea{min-height:90px;resize:vertical}
+    .form-note{font-size:.85rem;color:#607680;margin:12px 0 18px}
+    .qr-card{text-align:center}.qr-card img{width:min(100%,230px);height:auto;display:block;margin:12px auto 18px}.qr-card p{color:#58717b}
+    .app-tip{padding:14px;border-radius:14px;background:#eaf8f8;color:var(--navy);font-size:.92rem;margin-top:16px}
+    .mobile-booking{display:none}
+    @media(max-width:800px){.booking-grid{grid-template-columns:1fr}.booking-form{grid-template-columns:1fr 1fr}}
+    @media(prefers-reduced-motion:reduce){.hero::before{animation:none}}
+    @media(max-width:520px){.booking-form{grid-template-columns:1fr}.field.full{grid-column:auto}.mobile-booking{display:inline-flex;position:fixed;bottom:14px;left:14px;right:14px;z-index:50;box-shadow:0 8px 24px #002b3c50}.booking-card,.qr-card{padding:20px}body{padding-bottom:74px}}
+        @media(max-width:800px){.nav{flex-wrap:wrap}.navlinks{order:3;width:100%;justify-content:center;gap:14px;flex-wrap:wrap}.navlinks a{font-size:.8rem}.nav>.button{padding:10px 14px}.hero{min-height:540px}.about-grid,.contact-grid{grid-template-columns:1fr}.about-image{min-height:280px}.cards,.rate-grid{grid-template-columns:1fr 1fr}.gallery-grid{grid-template-columns:1fr 1fr;gap:10px}.gallery-photo{min-height:155px}.gallery-photo:first-child{grid-column:span 2;grid-row:span 1;min-height:230px}}
+    @media(prefers-reduced-motion:reduce){.hero::before{animation:none}}
+    @media(max-width:520px){section{padding:58px 18px}.nav{padding:12px 16px}.brand{font-size:1.05rem}.navlinks{gap:10px}.navlinks a{font-size:.73rem}.hero{min-height:510px;padding:70px 18px}.cards,.rate-grid{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr 1fr;gap:9px}.gallery-photo{min-height:125px;border-radius:12px}.gallery-photo:first-child{grid-column:span 2;min-height:190px}.contact-box{padding:23px}.button{padding:12px 16px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#home">MAKALOKA <span>BEACH RESORT</span></a>
+      <div class="navlinks">
+        <a href="#home">Home</a><a href="#about">About</a><a href="#story">Our Story</a><a href="#facilities">Facilities</a><a href="#gallery">Gallery</a><a href="#rates">Rates</a><a href="#booking">Book</a><a href="#contact">Contact</a>
+      </div>
+      <a class="button" href="#booking">Book Now ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+    <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">🔊 Play Ocean Sounds</button>
+    <audio id="oceanAudio" preload="none" loop playsinline><source src="audio/ocean-waves.wav" type="audio/wav"></audio>
+      <div class="hero-inner">
+        <div class="eyebrow">Welcome to</div>
+        <h1>Makaloka<br>Beach Resort</h1>
+        <p>Your escape to the beauty of the beach.</p>
+        <p>Spend quality time with family and friends at our coastal getaway in Liloan, Cebu.</p>
+        <a class="button light" href="#contact">Plan Your Visit&nbsp; →</a>
+        <div class="location">⌖ Tiwasan, Catarman, Liloan, Cebu, Philippines</div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container about-grid">
+        <div class="about-image" role="img" aria-label="Tropical beach and turquoise water"></div>
+        <div class="about-copy">
+          <div class="eyebrow">A little coastal escape</div>
+          <h2>Welcome to Makaloka</h2>
+          <p>Makaloka Beach Resort is a place to slow down, enjoy the coastal surroundings, and make memories with the people who matter most.</p>
+          <p>Whether you're planning a family outing or a relaxing day by the sea, we look forward to welcoming you.</p>
+          <a class="button" href="#contact">Contact the Resort →</a>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="story" style="background:linear-gradient(135deg,#f0fbfb,#fff8ec);">
+      <div class="container" style="max-width:900px;">
+        <div class="section-title" style="margin-bottom:24px;">
+          <div class="eyebrow">The meaning behind our name</div>
+          <h2>Crazy About the Beach!</h2>
+          <p><strong>“Makaloka: Crazy About the Beach!”</strong></p>
+        </div>
+        <div style="background:#fff;border-radius:22px;padding:clamp(22px,5vw,42px);box-shadow:0 12px 35px #073b5710;">
+          <p>Have you ever experienced a place so beautiful that it makes you fall in love at first sight? A place where the sound of the waves, the cool sea breeze, and the beauty of nature make you forget your worries and simply enjoy life? That is the inspiration behind the name <strong>Makaloka Beach Resort</strong>.</p>
+          <p>The name <em>Makaloka</em> was inspired by the Filipino word <em>“nakakaloka,”</em> an expression commonly used to describe something so amazing, exciting, or overwhelming that it leaves you speechless. For us, it represents being absolutely crazy about the beach!</p>
+          <p>The idea behind the name is simple: when people discover the beauty of the sea, feel the refreshing breeze, and spend unforgettable moments with family and friends, they experience a kind of happiness that makes them want to come back again and again.</p>
+          <p>Located in Tiwasan, Catarman, Liloan, Cebu, Makaloka Beach Resort has a name that reflects the joy, excitement, and relaxation a beach getaway can bring. It represents falling in love with the ocean, enjoying life's simple pleasures, and creating memories worth keeping.</p>
+          <p>At Makaloka, every visit is an opportunity to laugh a little louder, relax a little longer, and make beautiful memories with the people who matter most.</p>
+          <p style="font-size:1.12rem;font-weight:800;color:#075985;text-align:center;margin-top:28px;">Because sometimes, the best kind of <em>nakakaloka</em> is being completely crazy about the beach!</p>
+          <p style="text-align:center;font-weight:800;margin-bottom:0;">Makaloka Beach Resort — Where Every Wave Brings Peace and Every Visit Creates Memories.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="facilities">
+      <div class="container">
+        <div class="section-title"><div class="eyebrow">Enjoy your visit</div><h2>Facilities & Experiences</h2><p>Enjoy the resort's coastal views, pool, garden, and gathering spaces.</p></div>
+        <div class="cards">
+          <article class="card"><div class="icon">🌊</div><h3>Beachfront Views</h3><p>Take in the coastal scenery and ocean views.</p></article>
+          <article class="card"><div class="icon">🏡</div><h3>Pool & Garden</h3><p>Relax by the pool and enjoy the landscaped outdoor spaces.</p></article>
+          <article class="card"><div class="icon">👨‍👩‍👧‍👦</div><h3>Gathering Spaces</h3><p>Enjoy shared meals and time with family and friends.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <div class="container">
+        <div class="section-title"><div class="eyebrow">A glimpse of the coast</div><h2>Photo Gallery</h2><p>Explore our beachfront, swimming pool, cottages, garden hammock, pavilion, picnic area, and oceanfront lounge.</p></div>
+        <div class="gallery-grid" aria-label="Makaloka Beach Resort photo gallery">
+          <div class="gallery-photo" role="img" aria-label="Poolside event setup"></div>
+          <div class="gallery-photo" role="img" aria-label="Seaside pavilion and ocean view"></div>
+          <div class="gallery-photo" role="img" aria-label="Resort cottages at night"></div>
+          <div class="gallery-photo" role="img" aria-label="Guest relaxing on a pool float"></div>
+          <div class="gallery-photo" role="img" aria-label="Drink with a beachfront view"></div>
+          <div class="gallery-photo" role="img" aria-label="Beachfront cottages and lawn"></div>
+          <div class="gallery-photo" role="img" aria-label="Swimming pool during evening gathering"></div>
+          <div class="gallery-photo" role="img" aria-label="Seaside dining table and food"></div>
+          <div class="gallery-photo" role="img" aria-label="Green lawn overlooking the sea"></div>
+          <div class="gallery-photo" role="img" aria-label="Cottage and palm trees at night"></div>
+          <div class="gallery-photo" role="img" aria-label="Garden hammock beneath the trees"></div>
+          <div class="gallery-photo" role="img" aria-label="Pool and palm-lined lawn beside the sea"></div>
+          <div class="gallery-photo" role="img" aria-label="Open-air seaside pavilion in daylight"></div>
+          <div class="gallery-photo" role="img" aria-label="Picnic benches overlooking the beach"></div>
+          <div class="gallery-photo" role="img" aria-label="Oceanfront lounge seating area"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rates" id="rates">
+      <div class="container">
+        <div class="section-title"><div class="eyebrow">Plan ahead</div><h2>Rates & Inquiries</h2><p>Contact the resort for current prices and availability.</p></div>
+        <div class="rate-grid">
+          <article class="rate-card"><div class="icon" style="margin:0 auto">☀️</div><h3>Day Visit</h3><p>Ask about current day-use rates.</p><a class="button" href="#contact">Ask for Rates</a></article>
+          <article class="rate-card"><div class="icon" style="margin:0 auto">🏡</div><h3>Cottage Rental</h3><p>Ask about available cottages and prices.</p><a class="button" href="#contact">Ask for Rates</a></article>
+          <article class="rate-card"><div class="icon" style="margin:0 auto">👥</div><h3>Group Visit</h3><p>Contact us to discuss your planned visit.</p><a class="button" href="#contact">Make an Inquiry</a></article>
+        </div>
+        <p class="note">Rates and availability have not been provided yet. Please confirm directly with the resort.</p>
+      </div>
+    </section>
+
+    <section class="booking-section" id="booking">
+      <div class="container">
+        <div class="section-title"><div class="eyebrow">Your beach day starts here</div><h2>Booking Inquiry</h2><p>Send us your preferred date and group details. Our team will confirm availability and final rates with you.</p></div>
+        <div class="booking-grid">
+          <div class="booking-card">
+            <h3 style="margin-top:0;color:var(--navy)">Plan Your Visit</h3>
+            <form id="bookingForm" class="booking-form">
+              <div class="field"><label for="guestName">Full name *</label><input id="guestName" name="guestName" autocomplete="name" required placeholder="Your name"></div>
+              <div class="field"><label for="guestPhone">Mobile number *</label><input id="guestPhone" name="guestPhone" type="tel" autocomplete="tel" required placeholder="09xx xxx xxxx"></div>
+              <div class="field"><label for="visitDate">Preferred date *</label><input id="visitDate" name="visitDate" type="date" required></div>
+              <div class="field"><label for="visitType">Visit type *</label><select id="visitType" name="visitType" required><option value="">Choose one</option><option>Day use</option><option>Overnight stay</option><option>Group event / exclusive use</option><option>Other / ask for rates</option></select></div>
+              <div class="field"><label for="guestCount">Number of guests *</label><input id="guestCount" name="guestCount" type="number" min="1" max="300" required placeholder="e.g. 10"></div>
+              <div class="field"><label for="rooms">Rooms needed</label><select id="rooms" name="rooms"><option>Not sure yet</option><option>1 room</option><option>2 rooms</option><option>3 rooms</option><option>4 rooms</option><option>5 or more rooms</option><option>No room needed</option></select></div>
+              <div class="field full"><label for="requests">Additional requests</label><textarea id="requests" name="requests" placeholder="Tell us about your plans or questions (optional)"></textarea></div>
+              <div class="field full"><button class="button" type="submit">Send Booking Inquiry via WhatsApp ↗</button></div>
+            </form>
+            <p class="form-note">This form sends an inquiry to the resort through WhatsApp. Your booking is not confirmed until the resort replies and confirms availability, rates, and payment details.</p>
+          </div>
+          <aside class="qr-card">
+            <h3 style="color:var(--navy);margin-top:0">Scan to Visit Our Website</h3>
+            <p>Point your phone camera at this QR code to open Makaloka Beach Resort online.</p>
+            <img src="images/makaloka-website-qr.png" alt="QR code linking to the Makaloka Beach Resort website">
+            <a class="button" href="https://makalokabeachresortwebsitephotosrea.vercel.app/" target="_blank" rel="noopener">Open Website ↗</a>
+            <div class="app-tip"><strong>📱 Mobile-friendly:</strong> This website adapts to phone screens. On supported browsers, use the browser menu and choose <em>Add to Home screen</em> or <em>Install app</em> for quick access.</div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="section-title"><div class="eyebrow">We'd love to hear from you</div><h2>Contact Makaloka</h2><p>Get in touch to ask about rates, cottages, and planning your visit.</p></div>
+        <div class="contact-grid">
+          <div class="contact-box">
+            <h3>Makaloka Beach Resort</h3>
+            <div class="contact-line"><strong>📍 Address</strong>Tiwasan, Catarman, Liloan, Cebu, Philippines</div>
+            <div class="contact-line"><strong>📞 Phone</strong><a href="tel:+639171379343">0917 137 9343</a></div>
+            <div class="contact-line"><strong>📘 Facebook</strong><a href="https://www.facebook.com/share/1A1MVVYjJL/" target="_blank" rel="noopener">Visit our Facebook page ↗</a></div>
+            <div class="contact-actions">
+              <a class="button light" href="tel:+639171379343">Call Us</a>
+              <a class="button light" href="https://www.facebook.com/share/1A1MVVYjJL/" target="_blank" rel="noopener">Message on Facebook</a>
+            </div>
+          </div>
+          <div class="map-placeholder">
+            <div style="font-size:2.4rem">📍</div>
+            <h3>Find Us in Liloan, Cebu</h3>
+            <p>Tiwasan, Catarman, Liloan, Cebu, Philippines</p>
+            <a class="button" href="https://www.google.com/maps/search/?api=1&query=Tiwasan%2C+Catarman%2C+Liloan%2C+Cebu%2C+Philippines" target="_blank" rel="noopener">Open Google Maps ↗</a>
+            <p class="smallprint">Please confirm the exact map pin before publishing promotional materials.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a class="button mobile-booking" href="#booking" aria-label="Open booking inquiry form">📅 Book Your Visit</a>
+  <footer>
+    <strong>MAKALOKA BEACH RESORT</strong><br>
+    Tiwasan, Catarman, Liloan, Cebu, Philippines
+    <div class="smallprint">Your escape to the beauty of the beach.</div>
+  </footer>
+  <script>
+    const dateInput = document.getElementById('visitDate');
+    if (dateInput) dateInput.min = new Date().toISOString().slice(0,10);
+    document.getElementById('bookingForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const f = new FormData(this);
+      const message = [
+        'Hello Makaloka Beach Resort! I would like to send a booking inquiry.',
+        '', 'Name: ' + f.get('guestName'),
+        'Mobile: ' + f.get('guestPhone'),
+        'Preferred date: ' + f.get('visitDate'),
+        'Visit type: ' + f.get('visitType'),
+        'Number of guests: ' + f.get('guestCount'),
+        'Rooms needed: ' + f.get('rooms'),
+        'Additional requests: ' + (f.get('requests') || 'None'),
+        '', 'Please confirm availability and current rates. Thank you!'
+      ].join('\n');
+      window.open('https://wa.me/639171379343?text=' + encodeURIComponent(message), '_blank', 'noopener');
+    });
+    // Ocean sound playback: browsers require a user tap before audio can start.
+    const soundToggle = document.getElementById('soundToggle');
+    const oceanAudio = document.getElementById('oceanAudio');
+    if (soundToggle && oceanAudio) {
+      oceanAudio.volume = 0.22;
+      soundToggle.addEventListener('click', async () => {
+        if (oceanAudio.paused) {
+          try {
+            await oceanAudio.play();
+            soundToggle.textContent = '🔇 Stop Ocean Sounds';
+            soundToggle.setAttribute('aria-pressed', 'true');
+          } catch (error) {
+            soundToggle.textContent = '⚠️ Tap to Play Ocean Sounds';
+            console.error('Ocean audio could not play:', error);
+          }
+        } else {
+          oceanAudio.pause();
+          oceanAudio.currentTime = 0;
+          soundToggle.textContent = '🔊 Play Ocean Sounds';
+          soundToggle.setAttribute('aria-pressed', 'false');
+        }
+      });
+      oceanAudio.addEventListener('ended', () => {
+        soundToggle.textContent = '🔊 Play Ocean Sounds';
+        soundToggle.setAttribute('aria-pressed', 'false');
+      });
+    }
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
