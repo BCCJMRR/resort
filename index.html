@@ -120,8 +120,9 @@
 
     .chat-launcher{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:70;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
     .chat-launcher .button{box-shadow:0 8px 24px #002b3c30;border-radius:999px 0 0 999px;min-height:54px;min-width:58px;padding:12px 16px;justify-content:flex-start;white-space:nowrap;overflow:hidden;max-width:58px;transition:max-width .28s ease,background .2s ease,padding .2s ease;outline-offset:3px}
-    .chat-launcher .button:hover,.chat-launcher .button:focus-visible{max-width:240px;padding:12px 20px}
-    .chat-launcher .button:active{transform:scale(.98)}
+    .chat-launcher .button:hover,.chat-launcher .button:focus-visible,.chat-launcher .button:active{max-width:240px;padding:12px 20px}
+    /* Touch devices have no hover: show readable chat labels instead of hiding them. */
+    @media(hover:none),(pointer:coarse){.chat-launcher .button{max-width:220px;padding:12px 18px}.chat-launcher .button:hover{max-width:220px;padding:12px 18px}}
     @media(prefers-reduced-motion:reduce){.chat-launcher .button{transition:none}}
     .review-summary{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:0 auto 24px;color:var(--navy);font-weight:800}
     .stars{color:#f4ad24;letter-spacing:2px;font-size:1.2rem}
@@ -133,7 +134,7 @@
     .chat-panel.open{display:block}.chat-head{background:var(--navy);color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
     .chat-body{padding:16px}.chat-body p{margin-top:0;color:#526d78}.chat-body textarea{width:100%;min-height:90px;border:1px solid #bfd4d8;border-radius:10px;padding:10px;font:inherit}
     .chat-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chat-close{border:0;background:transparent;color:white;font-size:1.3rem;cursor:pointer}
-    @media(max-width:520px){.review-list{grid-template-columns:1fr}.chat-launcher{top:50%;right:0;transform:translateY(-50%);gap:8px}.chat-launcher .button{max-width:58px;min-height:52px;padding:12px 15px}.chat-launcher .button:focus-visible{max-width:240px;padding:12px 18px}.chat-panel{bottom:20px;right:68px}}
+    @media(max-width:520px){.review-list{grid-template-columns:1fr}.chat-launcher{top:50%;right:0;transform:translateY(-50%);gap:8px}.chat-launcher .button{min-height:52px}.chat-panel{bottom:20px;right:68px}}
     .mobile-booking{display:none}
     @media(max-width:800px){.booking-grid{grid-template-columns:1fr}.booking-form{grid-template-columns:1fr 1fr}}
     @media(prefers-reduced-motion:reduce){.hero::before{animation:none}}
