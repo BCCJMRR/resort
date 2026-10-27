@@ -115,6 +115,8 @@
     .form-note{font-size:.85rem;color:#607680;margin:12px 0 18px}
     .qr-card{text-align:center}.qr-card img{width:min(100%,230px);height:auto;display:block;margin:12px auto 18px}.qr-card p{color:#58717b}
     .app-tip{padding:14px;border-radius:14px;background:#eaf8f8;color:var(--navy);font-size:.92rem;margin-top:16px}
+    .feedback-section{background:linear-gradient(180deg,#fff8ec,#effbfb)}
+    .feedback-card{max-width:820px;margin:auto;background:#fff;border:1px solid #dcebec;border-radius:22px;padding:clamp(20px,4vw,34px);box-shadow:0 12px 32px #073b570b;position:relative;z-index:1}
     .mobile-booking{display:none}
     @media(max-width:800px){.booking-grid{grid-template-columns:1fr}.booking-form{grid-template-columns:1fr 1fr}}
     @media(prefers-reduced-motion:reduce){.hero::before{animation:none}}
@@ -129,7 +131,7 @@
     <nav class="nav" aria-label="Main navigation">
       <a class="brand" href="#home">MAKALOKA <span>BEACH RESORT</span></a>
       <div class="navlinks">
-        <a href="#home">Home</a><a href="#about">About</a><a href="#story">Our Story</a><a href="#facilities">Facilities</a><a href="#gallery">Gallery</a><a href="#rates">Rates</a><a href="#booking">Book</a><a href="#contact">Contact</a>
+        <a href="#home">Home</a><a href="#about">About</a><a href="#story">Our Story</a><a href="#facilities">Facilities</a><a href="#gallery">Gallery</a><a href="#rates">Rates</a><a href="#booking">Book</a><a href="#feedback">Feedback</a><a href="#contact">Contact</a>
       </div>
       <a class="button" href="#booking">Book Now ↗</a>
     </nav>
@@ -253,6 +255,21 @@
             <a class="button" href="https://makalokamakaloka.vercel.app/" target="_blank" rel="noopener">Open Website ↗</a>
             <div class="app-tip"><strong>📱 Mobile-friendly:</strong> This website adapts to phone screens. On supported browsers, use the browser menu and choose <em>Add to Home screen</em> or <em>Install app</em> for quick access.</div>
           </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="feedback" class="feedback-section">
+      <div class="container">
+        <div class="section-title"><div class="eyebrow">Your thoughts mean a lot</div><h2>Recommendations & Feedback</h2><p>Tell us about your visit. Share a compliment, suggestion, or recommendation to help us make every Makaloka experience even better.</p></div>
+        <div class="feedback-card">
+          <form id="feedbackForm" class="booking-form">
+            <div class="field"><label for="feedbackName">Your name (optional)</label><input id="feedbackName" name="feedbackName" placeholder="Name or leave blank"></div>
+            <div class="field"><label for="feedbackRating">How was your experience?</label><select id="feedbackRating" name="feedbackRating" required><option value="">Choose a rating</option><option>★★★★★ Excellent</option><option>★★★★☆ Very good</option><option>★★★☆☆ Good</option><option>★★☆☆☆ Needs improvement</option><option>★☆☆☆☆ Poor</option></select></div>
+            <div class="field full"><label for="feedbackMessage">Your testimonial, recommendation, or suggestion *</label><textarea id="feedbackMessage" name="feedbackMessage" required placeholder="Share what you enjoyed or what we can improve..." minlength="5"></textarea></div>
+            <div class="field full"><button class="button" type="submit">Send Feedback via WhatsApp ↗</button></div>
+          </form>
+          <p class="form-note">Your feedback will be sent to the resort through WhatsApp. Please avoid sharing private or sensitive information. Feedback is not displayed publicly on this page.</p>
         </div>
       </div>
     </section>
