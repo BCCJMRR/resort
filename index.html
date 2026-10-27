@@ -18,6 +18,9 @@
     html{scroll-behavior:smooth}
     body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.6;background:#fff}
     a{color:inherit}
+    /* Resort-wide seashell frame, responsive and decorative (does not block taps). */
+    body::before{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;border:clamp(12px,2.2vw,25px) solid transparent;border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='3' y='3' width='94' height='94' rx='8' fill='none' stroke='%23c8a77a' stroke-width='5'/%3E%3Cg fill='%23fff8ec' stroke='%23b99568' stroke-width='2'%3E%3Cpath d='M15 22Q3 9 18 4Q34 9 24 22Z M18 5L20 20 M12 9L20 20 M26 78Q13 65 28 60Q43 65 34 78Z M28 61L30 76 M22 65L30 76'/%3E%3C/g%3E%3C/svg%3E") 24 stretch;opacity:.8}
+    @media(max-width:520px){body::before{border-width:10px;opacity:.72}}
     /* Soft seashell artwork on light sections; original resort photos remain unchanged. */
     section:not(.hero){position:relative;isolation:isolate;overflow:hidden}
     section:not(.hero)::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.88;
