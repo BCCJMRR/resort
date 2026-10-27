@@ -278,14 +278,14 @@
         <div class="section-title"><div class="eyebrow">Your thoughts mean a lot</div><h2>Recommendations & Feedback</h2><p>Tell us about your visit. Share a compliment, suggestion, or recommendation to help us make every Makaloka experience even better.</p></div>
         <div class="feedback-card">
           <div class="review-summary"><span class="stars" aria-label="Five star rating">★★★★★</span><span>Guest ratings & testimonials</span></div>
-          <div id="publicReviews" class="review-list" aria-live="polite"><p>Customer reviews will appear here once the shared review service is connected.</p></div>
+          <div id="publicReviews" class="review-list" aria-live="polite"><p>No reviews have been submitted yet. Be the first to share your experience!</p></div>
           <form id="feedbackForm" class="booking-form">
             <div class="field"><label for="feedbackName">Your name (optional)</label><input id="feedbackName" name="feedbackName" placeholder="Name or leave blank"></div>
             <div class="field"><label for="feedbackRating">How was your experience?</label><select id="feedbackRating" name="feedbackRating" required><option value="">Choose a rating</option><option>★★★★★ Excellent</option><option>★★★★☆ Very good</option><option>★★★☆☆ Good</option><option>★★☆☆☆ Needs improvement</option><option>★☆☆☆☆ Poor</option></select></div>
             <div class="field full"><label for="feedbackMessage">Your testimonial, recommendation, or suggestion *</label><textarea id="feedbackMessage" name="feedbackMessage" required placeholder="Share what you enjoyed or what we can improve..." minlength="5"></textarea></div>
             <div class="field full"><button class="button" type="submit">Submit Review ↗</button></div>
           </form>
-          <p class="form-note">Your review can be published after the shared review service is connected and configured. Please avoid sharing private or sensitive information. For now, this form sends your review to the resort through WhatsApp.</p>
+          <p class="form-note">Reviews submitted here are saved on this device for preview and also sent to the resort through WhatsApp for review. Public sharing across all visitors requires a shared review database. Please avoid sharing private or sensitive information.</p>
         </div>
       </div>
     </section>
@@ -350,6 +350,71 @@
       ].join('\n');
       window.open('https://wa.me/639171379343?text=' + encodeURIComponent(message), '_blank', 'noopener');
     });
+
+    // Guest feedback: display submitted reviews locally and send them to resort for moderation.
+    const feedbackForm = document.getElementById('feedbackForm');
+    const publicReviews = document.getElementById('publicReviews');
+    const reviewStoreKey = 'makaloka_guest_reviews_v1';
+    function renderGuestReviews() {
+      let entries = [];
+      try { entries = JSON.parse(localStorage.getItem(reviewStoreKey) || '[]'); } catch (_) {}
+      publicReviews.replaceChildren();
+      if (!entries.length) {
+        const empty = document.createElement('p');
+        empty.textContent = 'No reviews have been submitted yet. Be the first to share your experience!';
+        publicReviews.appendChild(empty);
+        return;
+      }
+      entries.slice().reverse().forEach(entry => {
+        const card = document.createElement('article');
+        card.className = 'review-item';
+        const rating = document.createElement('div');
+        rating.className = 'stars';
+        rating.textContent = entry.stars;
+        const heading = document.createElement('h3');
+        heading.textContent = entry.name || 'Resort Guest';
+        const comment = document.createElement('p');
+        comment.textContent = entry.comment;
+        const type = document.createElement('small');
+        type.textContent = entry.kind + (entry.date ? ' · ' + entry.date : '');
+        card.append(rating, heading, comment, type);
+        publicReviews.appendChild(card);
+      });
+    }
+    feedbackForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const f = new FormData(this);
+      const ratingText = String(f.get('feedbackRating') || '');
+      const stars = ratingText.match(/★+/)?.[0] || '★★★★★';
+      const entry = {
+        name: String(f.get('feedbackName') || '').trim(),
+        stars,
+        comment: String(f.get('feedbackMessage') || '').trim(),
+        kind: 'Guest feedback / testimonial',
+        date: new Date().toLocaleDateString()
+      };
+      if (entry.comment.length < 5) { alert('Please write a little more about your experience.'); return; }
+      try {
+        const entries = JSON.parse(localStorage.getItem(reviewStoreKey) || '[]');
+        entries.push(entry);
+        localStorage.setItem(reviewStoreKey, JSON.stringify(entries.slice(-50)));
+      } catch (_) {
+        alert('Your device could not save this review locally. You can still send it to the resort.');
+      }
+      renderGuestReviews();
+      const message = [
+        'Hello Makaloka Beach Resort! Here is guest feedback for your review.',
+        'Name: ' + (entry.name || 'Guest'),
+        'Rating: ' + entry.stars,
+        'Feedback type: ' + entry.kind,
+        'Comment: ' + entry.comment,
+        'Please consider this for the resort testimonials. Thank you!'
+      ].join('\\n');
+      window.open('https://wa.me/639171379343?text=' + encodeURIComponent(message), '_blank', 'noopener');
+      this.reset();
+      alert('Thank you! Your feedback is shown on this device and has been prepared to send to the resort through WhatsApp. It is not yet visible to all website visitors.');
+    });
+    renderGuestReviews();
 
     // Website chat shortcut: message is delivered to the resort via WhatsApp.
     const liveChatPanel = document.getElementById('liveChatPanel');
