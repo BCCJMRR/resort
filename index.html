@@ -138,7 +138,7 @@
   <main>
     <section class="hero" id="home">
     <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">🔊 Play Ocean Sounds</button>
-    <audio id="oceanAudio" preload="none" loop playsinline><source src="ocean-waves.wav" type="audio/wav"></audio>
+    <audio id="oceanAudio" preload="auto" loop playsinline><source src="./ocean-waves.wav" type="audio/wav"></audio>
       <div class="hero-inner">
         <div class="eyebrow">Welcome to</div>
         <h1>Makaloka<br>Beach Resort</h1>
@@ -312,7 +312,7 @@
     const soundToggle = document.getElementById('soundToggle');
     const oceanAudio = document.getElementById('oceanAudio');
     if (soundToggle && oceanAudio) {
-      oceanAudio.volume = 0.22;
+      oceanAudio.volume = 0.35;\n      oceanAudio.load();
       soundToggle.addEventListener('click', async () => {
         if (oceanAudio.paused) {
           try {
@@ -330,7 +330,7 @@
           soundToggle.setAttribute('aria-pressed', 'false');
         }
       });
-      oceanAudio.addEventListener('ended', () => {
+      oceanAudio.addEventListener('error', () => {\n        soundToggle.textContent = '⚠️ Ocean audio could not load';\n        soundToggle.setAttribute('aria-pressed', 'false');\n      });\n      oceanAudio.addEventListener('ended', () => {
         soundToggle.textContent = '🔊 Play Ocean Sounds';
         soundToggle.setAttribute('aria-pressed', 'false');
       });
