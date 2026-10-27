@@ -312,7 +312,8 @@
     const soundToggle = document.getElementById('soundToggle');
     const oceanAudio = document.getElementById('oceanAudio');
     if (soundToggle && oceanAudio) {
-      oceanAudio.volume = 0.35;\n      oceanAudio.load();
+      oceanAudio.volume = 0.35;
+      oceanAudio.load();
       soundToggle.addEventListener('click', async () => {
         if (oceanAudio.paused) {
           try {
@@ -330,7 +331,11 @@
           soundToggle.setAttribute('aria-pressed', 'false');
         }
       });
-      oceanAudio.addEventListener('error', () => {\n        soundToggle.textContent = '⚠️ Ocean audio could not load';\n        soundToggle.setAttribute('aria-pressed', 'false');\n      });\n      oceanAudio.addEventListener('ended', () => {
+      oceanAudio.addEventListener('error', () => {
+        soundToggle.textContent = '⚠️ Ocean audio could not load';
+        soundToggle.setAttribute('aria-pressed', 'false');
+      });
+      oceanAudio.addEventListener('ended', () => {
         soundToggle.textContent = '🔊 Play Ocean Sounds';
         soundToggle.setAttribute('aria-pressed', 'false');
       });
