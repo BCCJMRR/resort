@@ -457,9 +457,10 @@
       rewardMessage.textContent = 'Catch items to see your score and reward milestones.';
       fishingOcean.querySelectorAll('.catch-item').forEach(item => { item.classList.remove('caught'); item.style.animationPlayState = 'running'; });
     }
-    startFishing.addEventListener('click', resetFishingGame);
+    startFishing.addEventListener('click', () => { resetFishingGame(); playGameSound('start'); startArcadeMusic(); });
     fishingOcean.querySelectorAll('.catch-item').forEach(item => item.addEventListener('click', () => {
       if (item.classList.contains('caught')) return;
+      playGameSound(item.classList.contains('shell') ? 'shell' : 'catch');
       const gained = Number(item.dataset.points || 0);
       fishPoints += gained; catches += 1;
       item.classList.add('caught');
