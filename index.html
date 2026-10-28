@@ -580,14 +580,31 @@
       feedbackVideoPreview.style.display = 'block';
     });
 
-    // Website chat shortcut: message is delivered to the resort via WhatsApp.
+    // Collapsible chat launcher; send reliably navigates to WhatsApp with the message.
     const liveChatPanel = document.getElementById('liveChatPanel');
-    document.getElementById('openLiveChat')?.addEventListener('click', () => liveChatPanel.classList.toggle('open'));
-    document.getElementById('closeLiveChat')?.addEventListener('click', () => liveChatPanel.classList.remove('open'));
-    document.getElementById('sendLiveChat')?.addEventListener('click', () => {
-      const msg = document.getElementById('liveChatMessage').value.trim();
-      if (!msg) { alert('Please type a message first.'); return; }
-      window.open('https://wa.me/639171379343?text=' + encodeURIComponent('Website chat message for Makaloka Beach Resort: ' + msg), '_blank', 'noopener');
+    const openLiveChat = document.getElementById('openLiveChat');
+    const closeLiveChat = document.getElementById('closeLiveChat');
+    const sendLiveChat = document.getElementById('sendLiveChat');
+    const liveChatMessage = document.getElementById('liveChatMessage');
+    function toggleLiveChat(forceOpen) {
+      const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !liveChatPanel.classList.contains('open');
+      liveChatPanel.classList.toggle('open', shouldOpen);
+      openLiveChat?.setAttribute('aria-expanded', String(shouldOpen));
+      if (shouldOpen) liveChatMessage?.focus();
+    }
+    openLiveChat?.addEventListener('click', () => toggleLiveChat());
+    closeLiveChat?.addEventListener('click', () => toggleLiveChat(false));
+    sendLiveChat?.addEventListener('click', () => {
+      const msg = liveChatMessage?.value.trim();
+      if (!msg) { alert('Please type a message first.'); liveChatMessage?.focus(); return; }
+      const whatsappUrl = 'https://wa.me/639171379343?text=' + encodeURIComponent('Website chat message for Makaloka Beach Resort: ' + msg);
+      window.location.href = whatsappUrl;
+    });
+    liveChatMessage?.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendLiveChat?.click();
+      }
     });
     // Ocean sound playback: browsers require a user tap before audio can start.
     const soundToggle = document.getElementById('soundToggle');
