@@ -165,8 +165,8 @@
     .catch-item{position:absolute;left:0;top:var(--lane,50%);border:0;background:transparent;cursor:pointer;font-size:clamp(2.2rem,7vw,3.7rem);filter:drop-shadow(0 3px 2px #06445a30);padding:6px;touch-action:manipulation;will-change:transform;animation:game-drift var(--speed,7s) linear var(--delay,0s) infinite;z-index:2}
     .catch-item.fish{animation-name:fish-race}
     .catch-item.shell{font-size:clamp(1.8rem,5vw,2.8rem);animation-name:shell-race}
-    @keyframes fish-race{from{transform:translateX(0) scaleX(1)}to{transform:translateX(calc(-100cqw - 100%)) scaleX(1)}}
-    @keyframes shell-race{from{transform:translateX(0) rotate(0deg)}to{transform:translateX(calc(-100cqw - 100%)) rotate(-18deg)}}
+    @keyframes fish-race{from{transform:translateX(100cqw) scaleX(1)}to{transform:translateX(-100%) scaleX(1)}}
+    @keyframes shell-race{from{transform:translateX(100cqw) rotate(0deg)}to{transform:translateX(-100%) rotate(-18deg)}}
     .catch-item.caught{visibility:hidden;pointer-events:none;animation-play-state:paused}
     .game-controls{margin:16px 0}.game-status{font-size:.9rem}
     .game-promo{background:#effbfb;border-radius:16px;padding:18px;color:var(--navy)}.game-promo p{margin:8px 0}
