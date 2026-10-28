@@ -159,14 +159,14 @@
     .game-section{background:linear-gradient(180deg,#eafaff,#fff8ec)}
     .fishing-card{max-width:900px;margin:auto;background:white;border:1px solid #d4e9ee;border-radius:22px;padding:clamp(16px,3vw,28px);box-shadow:0 12px 32px #073b570b;position:relative;z-index:1}
     .game-top,.game-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--navy);margin-bottom:14px}
-    .game-ocean{height:330px;position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(#b9eff7 0 42%,#48b9d4 43% 70%,#087eaa 71%);border:2px solid #91d8e7}
+    .game-ocean{container-type:inline-size;height:330px;position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(#b9eff7 0 42%,#48b9d4 43% 70%,#087eaa 71%);border:2px solid #91d8e7}
     .game-sun{position:absolute;right:7%;top:10px;font-size:2rem}.game-cloud{position:absolute;left:12%;top:16px;font-size:2rem}
     .game-hint{position:absolute;top:8px;left:0;right:0;text-align:center;color:#075985;font-weight:800}
     .catch-item{position:absolute;left:0;top:var(--lane,50%);border:0;background:transparent;cursor:pointer;font-size:clamp(2.2rem,7vw,3.7rem);filter:drop-shadow(0 3px 2px #06445a30);padding:6px;touch-action:manipulation;will-change:transform;animation:game-drift var(--speed,7s) linear var(--delay,0s) infinite;z-index:2}
     .catch-item.fish{animation-name:fish-race}
     .catch-item.shell{font-size:clamp(1.8rem,5vw,2.8rem);animation-name:shell-race}
-    @keyframes fish-race{from{transform:translateX(105%) scaleX(1)}to{transform:translateX(-130%) scaleX(1)}}
-    @keyframes shell-race{from{transform:translateX(105%) rotate(0deg)}to{transform:translateX(-130%) rotate(-18deg)}}
+    @keyframes fish-race{from{transform:translateX(0) scaleX(1)}to{transform:translateX(calc(-100cqw - 100%)) scaleX(1)}}
+    @keyframes shell-race{from{transform:translateX(0) rotate(0deg)}to{transform:translateX(calc(-100cqw - 100%)) rotate(-18deg)}}
     .catch-item.caught{visibility:hidden;pointer-events:none;animation-play-state:paused}
     .game-controls{margin:16px 0}.game-status{font-size:.9rem}
     .game-promo{background:#effbfb;border-radius:16px;padding:18px;color:var(--navy)}.game-promo p{margin:8px 0}
@@ -286,11 +286,11 @@
           <div class="game-ocean" id="fishingOcean" role="application" aria-label="Fishing game. Tap a fish or shell to catch it.">
             <div class="game-sun">☀️</div><div class="game-cloud">☁️</div>
             <div class="game-hint">Tap the fish 🐠 and shells 🐚!</div>
-            <button class="catch-item fish fish-one" style="--lane:34%;--speed:6.2s;--delay:-1s" data-points="10" aria-label="Catch fish for 10 points">🐠</button>
-            <button class="catch-item fish fish-two" style="--lane:49%;--speed:4.7s;--delay:-3.1s" data-points="15" aria-label="Catch fish for 15 points">🐟</button>
-            <button class="catch-item fish fish-three" style="--lane:64%;--speed:7.4s;--delay:-5.2s" data-points="20" aria-label="Catch fish for 20 points">🐡</button>
-            <button class="catch-item shell shell-one" style="--lane:78%;--speed:8.8s;--delay:-2s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
-            <button class="catch-item shell shell-two" style="--lane:85%;--speed:6.8s;--delay:-4.4s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
+            <button class="catch-item fish fish-one" style="--lane:34%;--speed:12s;--delay:-1s" data-points="10" aria-label="Catch fish for 10 points">🐠</button>
+            <button class="catch-item fish fish-two" style="--lane:49%;--speed:8s;--delay:-3.1s" data-points="15" aria-label="Catch fish for 15 points">🐟</button>
+            <button class="catch-item fish fish-three" style="--lane:64%;--speed:5s;--delay:-5.2s" data-points="20" aria-label="Catch fish for 20 points">🐡</button>
+            <button class="catch-item shell shell-one" style="--lane:78%;--speed:10s;--delay:-2s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
+            <button class="catch-item shell shell-two" style="--lane:85%;--speed:4s;--delay:-4.4s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
           </div>
           <div class="game-controls"><button class="button" id="startFishing" type="button">Start / Restart Game</button><span id="gameStatus" aria-live="polite">Ready to fish? Press start!</span></div>
           <div class="game-promo" id="gamePromo"><strong>🏖️ Resort Rewards</strong><p>Earn points in the game for fun. Promotions and discounts are subject to resort approval and must be confirmed by the resort.</p><p id="rewardMessage">Catch items to see your score and reward milestones.</p><a class="button" href="#booking">Ask About Promotions</a></div>
@@ -398,6 +398,34 @@
     let catches = 0;
     // Game sound effects (Web Audio starts after the player's first tap).
     let gameAudioContext;
+    let arcadeMusicTimer = null;
+    let arcadeMusicStep = 0;
+    function startArcadeMusic() {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        gameAudioContext ||= new AudioContextClass();
+        if (gameAudioContext.state === 'suspended') gameAudioContext.resume();
+        if (arcadeMusicTimer) return;
+        const melody = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880, 698.46];
+        const playNote = () => {
+          if (!gameAudioContext || gameAudioContext.state !== 'running') return;
+          const now = gameAudioContext.currentTime;
+          const osc = gameAudioContext.createOscillator();
+          const gain = gameAudioContext.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(melody[arcadeMusicStep % melody.length], now);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.035, now + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+          osc.connect(gain); gain.connect(gameAudioContext.destination);
+          osc.start(now); osc.stop(now + 0.24);
+          arcadeMusicStep++;
+        };
+        playNote();
+        arcadeMusicTimer = window.setInterval(playNote, 260);
+      } catch (_) { /* Audio is optional; gameplay still works. */ }
+    }
     function playGameSound(kind = 'catch') {
       try {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
