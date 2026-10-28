@@ -16,6 +16,13 @@
     :root{--navy:#073b57;--blue:#087eaa;--aqua:#dff7f7;--sand:#fff8ec;--ink:#173746;--white:#fff}
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
+    /* Calculate anchor offset from the actual sticky header height (nav wraps on phones). */
+    :root{--anchor-offset:150px}
+    @media(max-width:800px){:root{--anchor-offset:190px}}
+    @media(max-width:520px){:root{--anchor-offset:210px}}
+    html{scroll-padding-top:var(--anchor-offset)}
+    main section[id]{scroll-margin-top:var(--anchor-offset)}
+
     /* Offset anchor jumps below the sticky navigation on every screen size. */
     main section[id]{scroll-margin-top:135px}
     @media(max-width:800px){main section[id]{scroll-margin-top:165px}}
@@ -394,6 +401,20 @@
     <div class="smallprint">Your escape to the beauty of the beach.</div>
   </footer>
   <script>
+
+    // Ensure every navigation tab lands below the full sticky header, including wrapped mobile menus.
+    document.querySelectorAll('.nav a[href^="#"]').forEach(link => {
+      link.addEventListener('click', event => {
+        const target = document.getElementById(link.getAttribute('href').slice(1));
+        const header = document.querySelector('.topbar');
+        if (!target || !header) return;
+        event.preventDefault();
+        const offset = header.getBoundingClientRect().height + 14;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        history.replaceState(null, '', link.getAttribute('href'));
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      });
+    });
 
     // Simple tap-to-catch mini game. Rewards are playful points, not automatic discounts.
     const fishingScore = document.getElementById('fishingScore');
