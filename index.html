@@ -162,14 +162,12 @@
     .game-ocean{height:330px;position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(#b9eff7 0 42%,#48b9d4 43% 70%,#087eaa 71%);border:2px solid #91d8e7}
     .game-sun{position:absolute;right:7%;top:10px;font-size:2rem}.game-cloud{position:absolute;left:12%;top:16px;font-size:2rem}
     .game-hint{position:absolute;top:8px;left:0;right:0;text-align:center;color:#075985;font-weight:800}
-    .catch-item{position:absolute;border:0;background:transparent;cursor:pointer;font-size:clamp(2.2rem,7vw,3.7rem);filter:drop-shadow(0 3px 2px #06445a30);padding:6px;touch-action:manipulation}
-    .fish-one{left:12%;top:48%;animation:fish-swim 7s ease-in-out infinite alternate}
-    .fish-two{left:48%;top:62%;animation:fish-swim 5s ease-in-out infinite alternate-reverse}
-    .fish-three{left:75%;top:42%;animation:fish-swim 8s ease-in-out infinite alternate}
-    .shell-one{left:27%;top:77%;animation:shell-bob 3s ease-in-out infinite}
-    .shell-two{left:62%;top:80%;animation:shell-bob 4s ease-in-out infinite}
-    @keyframes fish-swim{to{transform:translateX(24px) rotate(5deg)}}@keyframes shell-bob{50%{transform:translateY(-8px)}}
-    .catch-item.caught{visibility:hidden;pointer-events:none}
+    .catch-item{position:absolute;left:0;top:var(--lane,50%);border:0;background:transparent;cursor:pointer;font-size:clamp(2.2rem,7vw,3.7rem);filter:drop-shadow(0 3px 2px #06445a30);padding:6px;touch-action:manipulation;will-change:transform;animation:game-drift var(--speed,7s) linear var(--delay,0s) infinite;z-index:2}
+    .catch-item.fish{animation-name:fish-race}
+    .catch-item.shell{font-size:clamp(1.8rem,5vw,2.8rem);animation-name:shell-race}
+    @keyframes fish-race{from{transform:translateX(105%) scaleX(1)}to{transform:translateX(-130%) scaleX(1)}}
+    @keyframes shell-race{from{transform:translateX(105%) rotate(0deg)}to{transform:translateX(-130%) rotate(-18deg)}}
+    .catch-item.caught{visibility:hidden;pointer-events:none;animation-play-state:paused}
     .game-controls{margin:16px 0}.game-status{font-size:.9rem}
     .game-promo{background:#effbfb;border-radius:16px;padding:18px;color:var(--navy)}.game-promo p{margin:8px 0}
     @media(max-width:520px){.game-ocean{height:280px}.catch-item{font-size:2.4rem}}
@@ -288,11 +286,11 @@
           <div class="game-ocean" id="fishingOcean" role="application" aria-label="Fishing game. Tap a fish or shell to catch it.">
             <div class="game-sun">☀️</div><div class="game-cloud">☁️</div>
             <div class="game-hint">Tap the fish 🐠 and shells 🐚!</div>
-            <button class="catch-item fish fish-one" data-points="10" aria-label="Catch fish for 10 points">🐠</button>
-            <button class="catch-item fish fish-two" data-points="15" aria-label="Catch fish for 15 points">🐟</button>
-            <button class="catch-item fish fish-three" data-points="20" aria-label="Catch fish for 20 points">🐡</button>
-            <button class="catch-item shell shell-one" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
-            <button class="catch-item shell shell-two" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
+            <button class="catch-item fish fish-one" style="--lane:34%;--speed:6.2s;--delay:-1s" data-points="10" aria-label="Catch fish for 10 points">🐠</button>
+            <button class="catch-item fish fish-two" style="--lane:49%;--speed:4.7s;--delay:-3.1s" data-points="15" aria-label="Catch fish for 15 points">🐟</button>
+            <button class="catch-item fish fish-three" style="--lane:64%;--speed:7.4s;--delay:-5.2s" data-points="20" aria-label="Catch fish for 20 points">🐡</button>
+            <button class="catch-item shell shell-one" style="--lane:78%;--speed:8.8s;--delay:-2s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
+            <button class="catch-item shell shell-two" style="--lane:85%;--speed:6.8s;--delay:-4.4s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
           </div>
           <div class="game-controls"><button class="button" id="startFishing" type="button">Start / Restart Game</button><span id="gameStatus" aria-live="polite">Ready to fish? Press start!</span></div>
           <div class="game-promo" id="gamePromo"><strong>🏖️ Resort Rewards</strong><p>Earn points in the game for fun. Promotions and discounts are subject to resort approval and must be confirmed by the resort.</p><p id="rewardMessage">Catch items to see your score and reward milestones.</p><a class="button" href="#booking">Ask About Promotions</a></div>
@@ -427,9 +425,9 @@
     function resetFishingGame() {
       fishPoints = 0; catches = 0;
       fishingScore.textContent = 'Points: 0';
-      gameStatus.textContent = 'Go catch some fish and shells!';
+      gameStatus.textContent = 'Catch the fish and shells as they swim by!';
       rewardMessage.textContent = 'Catch items to see your score and reward milestones.';
-      fishingOcean.querySelectorAll('.catch-item').forEach(item => item.classList.remove('caught'));
+      fishingOcean.querySelectorAll('.catch-item').forEach(item => { item.classList.remove('caught'); item.style.animationPlayState = 'running'; });
     }
     startFishing.addEventListener('click', resetFishingGame);
     fishingOcean.querySelectorAll('.catch-item').forEach(item => item.addEventListener('click', () => {
