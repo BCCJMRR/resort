@@ -272,6 +272,7 @@
             <img src="makaloka-website-qr.png" alt="QR code linking to the Makaloka Beach Resort website">
             <a class="button" href="https://makalokamakaloka.vercel.app/" target="_blank" rel="noopener">Open Website ↗</a>
             <div class="app-tip"><strong>📱 Mobile-friendly:</strong> This website adapts to phone screens. On supported browsers, use the browser menu and choose <em>Add to Home screen</em> or <em>Install app</em> for quick access.</div>
+            <p style="margin-top:14px"><a class="button" href="https://makalokamakaloka.vercel.app/" target="_blank" rel="noopener">Get Makaloka Mobile App ↗</a></p>
           </aside>
         </div>
       </div>
@@ -287,6 +288,7 @@
             <div class="field"><label for="feedbackName">Your name (optional)</label><input id="feedbackName" name="feedbackName" placeholder="Name or leave blank"></div>
             <div class="field"><label for="feedbackRating">How was your experience?</label><select id="feedbackRating" name="feedbackRating" required><option value="">Choose a rating</option><option>★★★★★ Excellent</option><option>★★★★☆ Very good</option><option>★★★☆☆ Good</option><option>★★☆☆☆ Needs improvement</option><option>★☆☆☆☆ Poor</option></select></div>
             <div class="field full"><label for="feedbackMessage">Your testimonial, recommendation, or suggestion *</label><textarea id="feedbackMessage" name="feedbackMessage" required placeholder="Share what you enjoyed or what we can improve..." minlength="5"></textarea></div>
+            <div class="field full"><label for="feedbackVideo">Attach a short video (optional)</label><input id="feedbackVideo" name="feedbackVideo" type="file" accept="video/*"><video id="feedbackVideoPreview" controls playsinline style="display:none;width:100%;max-height:280px;border-radius:14px;background:#082f43"></video><p class="form-note">Choose a video from your phone to preview it. This form does not upload the video publicly; please send the video to the resort separately.</p></div>
             <div class="field full"><button class="button" type="submit">Submit Review ↗</button></div>
           </form>
           <p class="form-note">Reviews submitted here are saved on this device for preview and also sent to the resort through WhatsApp for review. Public sharing across all visitors requires a shared review database. Please avoid sharing private or sensitive information.</p>
@@ -419,6 +421,28 @@
       alert('Thank you! Your feedback is shown on this device and has been prepared to send to the resort through WhatsApp. It is not yet visible to all website visitors.');
     });
     renderGuestReviews();
+
+    // Local video picker and preview; no server upload is implied.
+    const feedbackVideo = document.getElementById('feedbackVideo');
+    const feedbackVideoPreview = document.getElementById('feedbackVideoPreview');
+    let feedbackVideoUrl = null;
+    feedbackVideo?.addEventListener('change', () => {
+      if (feedbackVideoUrl) URL.revokeObjectURL(feedbackVideoUrl);
+      const file = feedbackVideo.files?.[0];
+      if (!file) {
+        feedbackVideoPreview.removeAttribute('src');
+        feedbackVideoPreview.style.display = 'none';
+        return;
+      }
+      if (!file.type.startsWith('video/')) {
+        alert('Please select a video file.');
+        feedbackVideo.value = '';
+        return;
+      }
+      feedbackVideoUrl = URL.createObjectURL(file);
+      feedbackVideoPreview.src = feedbackVideoUrl;
+      feedbackVideoPreview.style.display = 'block';
+    });
 
     // Website chat shortcut: message is delivered to the resort via WhatsApp.
     const liveChatPanel = document.getElementById('liveChatPanel');
