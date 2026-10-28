@@ -169,7 +169,8 @@
     .catch-item.shell{font-size:clamp(1.8rem,5vw,2.8rem);animation-name:shell-race}
     @keyframes fish-race{from{transform:translateX(100cqw) scaleX(1)}to{transform:translateX(-100%) scaleX(1)}}
     @keyframes shell-race{from{transform:translateX(100cqw) rotate(0deg)}to{transform:translateX(-100%) rotate(-18deg)}}
-    .catch-item.caught{visibility:hidden;pointer-events:none;animation-play-state:paused}\n    .game-ocean.paused .catch-item{animation-play-state:paused!important}
+    .catch-item.caught{visibility:hidden;pointer-events:none;animation-play-state:paused}
+    .game-ocean.paused .catch-item{animation-play-state:paused!important}
     .game-controls{margin:16px 0}.game-status{font-size:.9rem}
     .game-promo{background:#effbfb;border-radius:16px;padding:18px;color:var(--navy)}.game-promo p{margin:8px 0}
     @media(max-width:520px){.game-ocean{height:280px}.catch-item{font-size:2.4rem}}
@@ -397,7 +398,8 @@
     const rewardMessage = document.getElementById('rewardMessage');
     const startFishing = document.getElementById('startFishing');
     let fishPoints = 0;
-    let catches = 0;\n    let gamePaused = true;\n    const pauseFishing = document.getElementById("pauseFishing");
+    let catches = 0;
+    let gamePaused = true;\n    const pauseFishing = document.getElementById("pauseFishing");
     // Game sound effects (Web Audio starts after the player's first tap).
     let gameAudioContext;
     let arcadeMusicTimer = null;
