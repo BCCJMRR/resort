@@ -699,7 +699,8 @@
     accountForm?.addEventListener('submit',e=>{e.preventDefault();accountMessage.textContent='Account service setup is required before email registration or sign-in can work.'});
     document.getElementById('googleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Google sign-in must be activated in the resort authentication project.');
     document.getElementById('appleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Apple sign-in requires Apple Developer setup and authentication provider configuration.');
-\n    // Lightweight rain and bird decorations; never intercept taps or navigation.
+
+    // Lightweight rain and bird decorations; never intercept taps or navigation.
     const weatherOverlay = document.createElement('div');
     weatherOverlay.id = 'weather-overlay';
     weatherOverlay.setAttribute('aria-hidden', 'true');
