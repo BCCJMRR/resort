@@ -167,7 +167,7 @@
     .catch-item.shell{font-size:clamp(1.8rem,5vw,2.8rem);animation-name:shell-race}
     @keyframes fish-race{from{transform:translateX(100cqw) scaleX(1)}to{transform:translateX(-100%) scaleX(1)}}
     @keyframes shell-race{from{transform:translateX(100cqw) rotate(0deg)}to{transform:translateX(-100%) rotate(-18deg)}}
-    .catch-item.caught{visibility:hidden;pointer-events:none;animation-play-state:paused}
+    .catch-item.caught{visibility:hidden;pointer-events:none;animation-play-state:paused}\n    .game-ocean.paused .catch-item{animation-play-state:paused!important}
     .game-controls{margin:16px 0}.game-status{font-size:.9rem}
     .game-promo{background:#effbfb;border-radius:16px;padding:18px;color:var(--navy)}.game-promo p{margin:8px 0}
     @media(max-width:520px){.game-ocean{height:280px}.catch-item{font-size:2.4rem}}
@@ -292,7 +292,7 @@
             <button class="catch-item shell shell-one" style="--lane:78%;--speed:10s;--delay:-2s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
             <button class="catch-item shell shell-two" style="--lane:85%;--speed:4s;--delay:-4.4s" data-points="5" aria-label="Collect shell for 5 points">🐚</button>
           </div>
-          <div class="game-controls"><button class="button" id="startFishing" type="button">Start / Restart Game</button><span id="gameStatus" aria-live="polite">Ready to fish? Press start!</span></div>
+          <div class="game-controls"><button class="button" id="startFishing" type="button">Start / Restart Game</button><button class="button" id="pauseFishing" type="button">Pause</button><span id="gameStatus" aria-live="polite">Ready to fish? Press start!</span></div>
           <div class="game-promo" id="gamePromo"><strong>🏖️ Resort Rewards</strong><p>Earn points in the game for fun. Promotions and discounts are subject to resort approval and must be confirmed by the resort.</p><p id="rewardMessage">Catch items to see your score and reward milestones.</p><a class="button" href="#booking">Ask About Promotions</a></div>
         </div>
       </div>
@@ -395,7 +395,7 @@
     const rewardMessage = document.getElementById('rewardMessage');
     const startFishing = document.getElementById('startFishing');
     let fishPoints = 0;
-    let catches = 0;
+    let catches = 0;\n    let gamePaused = true;\n    const pauseFishing = document.getElementById("pauseFishing");
     // Game sound effects (Web Audio starts after the player's first tap).
     let gameAudioContext;
     let arcadeMusicTimer = null;
@@ -450,15 +450,39 @@
         });
       } catch (_) { /* Sound is optional; gameplay still works if audio is unavailable. */ }
     }
+    function stopArcadeMusic() {
+      if (arcadeMusicTimer) { window.clearInterval(arcadeMusicTimer); arcadeMusicTimer = null; }
+      if (gameAudioContext && gameAudioContext.state === 'running') gameAudioContext.suspend();
+    }
     function resetFishingGame() {
-      fishPoints = 0; catches = 0;
+      fishPoints = 0; catches = 0; gamePaused = false;
+      fishingOcean.classList.remove('paused');
+      pauseFishing.textContent = 'Pause';
       fishingScore.textContent = 'Points: 0';
-      gameStatus.textContent = 'Catch the fish and shells as they swim by!';
+      gameStatus.textContent = 'Catch fish and shells! 100 fish are swimming around.';
       rewardMessage.textContent = 'Catch items to see your score and reward milestones.';
       fishingOcean.querySelectorAll('.catch-item').forEach(item => { item.classList.remove('caught'); item.style.animationPlayState = 'running'; });
     }
-    startFishing.addEventListener('click', () => { resetFishingGame(); playGameSound('start'); startArcadeMusic(); });
-    fishingOcean.querySelectorAll('.catch-item').forEach(item => item.addEventListener('click', () => {
+    // Populate a full school of 100 fish, in varied lanes and speeds.
+    const fishKinds = ['🐠','🐟','🐡'];
+    for (let n = 0; n < 100; n++) {
+      const fish = document.createElement('button');
+      fish.type = 'button';
+      fish.className = 'catch-item fish generated-fish';
+      fish.dataset.points = String(5 + (n % 3) * 5);
+      fish.setAttribute('aria-label', 'Catch fish for ' + fish.dataset.points + ' points');
+      fish.textContent = fishKinds[n % fishKinds.length];
+      fish.style.setProperty('--lane', (15 + (n % 7) * 10) + '%');
+      fish.style.setProperty('--speed', (5 + (n % 9)) + 's');
+      fish.style.setProperty('--delay', (-((n * 1.37) % 12)) + 's');
+      fish.style.fontSize = 'clamp(1.25rem,3.2vw,2rem)';
+      fishingOcean.appendChild(fish);
+    }
+    function attachCatchHandlers() {
+      fishingOcean.querySelectorAll('.catch-item').forEach(item => {
+        if (item.dataset.catchHandler) return;
+        item.dataset.catchHandler = 'yes';
+        item.addEventListener('click', () => {
       if (item.classList.contains('caught')) return;
       playGameSound(item.classList.contains('shell') ? 'shell' : 'catch');
       const gained = Number(item.dataset.points || 0);
@@ -473,8 +497,28 @@
       } else {
         rewardMessage.textContent = 'Keep going—collect fish and shells for more points!';
       }
-      if (catches === 5) { gameStatus.textContent = 'All items caught! Press Restart to play again.'; playGameSound('finish'); }
-    }));
+      if (catches >= 102) { gameStatus.textContent = 'All catches collected! Press Restart to play again.'; playGameSound('finish'); }
+        });
+      });
+    }
+    attachCatchHandlers();
+    startFishing.addEventListener('click', () => { resetFishingGame(); playGameSound('start'); startArcadeMusic(); });
+    pauseFishing.addEventListener('click', () => {
+      if (gamePaused) {
+        gamePaused = false;
+        fishingOcean.classList.remove('paused');
+        pauseFishing.textContent = 'Pause';
+        gameStatus.textContent = 'Game resumed!';
+        if (gameAudioContext?.state === 'suspended') gameAudioContext.resume();
+        startArcadeMusic();
+      } else {
+        gamePaused = true;
+        fishingOcean.classList.add('paused');
+        pauseFishing.textContent = 'Resume';
+        gameStatus.textContent = 'Game paused. Sounds are stopped.';
+        stopArcadeMusic();
+      }
+    });
     const dateInput = document.getElementById('visitDate');
     if (dateInput) dateInput.min = new Date().toISOString().slice(0,10);
     document.getElementById('bookingForm').addEventListener('submit', function(event) {
