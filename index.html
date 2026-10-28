@@ -398,6 +398,32 @@
     const startFishing = document.getElementById('startFishing');
     let fishPoints = 0;
     let catches = 0;
+    // Game sound effects (Web Audio starts after the player's first tap).
+    let gameAudioContext;
+    function playGameSound(kind = 'catch') {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        gameAudioContext ||= new AudioContextClass();
+        if (gameAudioContext.state === 'suspended') gameAudioContext.resume();
+        const notes = kind === 'start' ? [523, 659, 784] :
+                      kind === 'shell' ? [880, 1175] :
+                      kind === 'finish' ? [784, 988, 1175] : [660, 880];
+        const now = gameAudioContext.currentTime;
+        notes.forEach((frequency, index) => {
+          const oscillator = gameAudioContext.createOscillator();
+          const gain = gameAudioContext.createGain();
+          oscillator.type = kind === 'shell' ? 'sine' : 'triangle';
+          oscillator.frequency.setValueAtTime(frequency, now + index * 0.09);
+          gain.gain.setValueAtTime(0.0001, now + index * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.12, now + index * 0.09 + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.09 + 0.16);
+          oscillator.connect(gain); gain.connect(gameAudioContext.destination);
+          oscillator.start(now + index * 0.09);
+          oscillator.stop(now + index * 0.09 + 0.17);
+        });
+      } catch (_) { /* Sound is optional; gameplay still works if audio is unavailable. */ }
+    }
     function resetFishingGame() {
       fishPoints = 0; catches = 0;
       fishingScore.textContent = 'Points: 0';
@@ -420,7 +446,7 @@
       } else {
         rewardMessage.textContent = 'Keep going—collect fish and shells for more points!';
       }
-      if (catches === 5) gameStatus.textContent = 'All items caught! Press Restart to play again.';
+      if (catches === 5) { gameStatus.textContent = 'All items caught! Press Restart to play again.'; playGameSound('finish'); }
     }));
     const dateInput = document.getElementById('visitDate');
     if (dateInput) dateInput.min = new Date().toISOString().slice(0,10);
