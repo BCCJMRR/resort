@@ -43,28 +43,6 @@
     .hero{min-height:600px;display:grid;place-items:center;text-align:center;color:#fff;padding:85px 22px;background:linear-gradient(90deg,rgba(2,38,57,.55),rgba(2,38,57,.18)),url('resort-beachfront.jpg') center/cover}
     .sound-toggle{position:absolute;right:22px;top:22px;z-index:2;border:1px solid rgba(255,255,255,.75);background:rgba(3,54,77,.62);color:#fff;border-radius:999px;padding:10px 15px;font-weight:700;cursor:pointer;backdrop-filter:blur(5px)}
     .hero{position:relative;overflow:hidden}
-    /* Visible animated sea-water splash: bright foam and aqua droplets across the hero. */
-    .sea-splash{position:absolute;left:-5%;right:-5%;bottom:-2px;height:clamp(145px,27vw,255px);z-index:1;pointer-events:none;overflow:hidden;filter:drop-shadow(0 -5px 12px rgba(190,250,255,.22))}
-    .sea-splash::before{content:"";position:absolute;inset:0;background:
-      radial-gradient(ellipse at 12% 62%,rgba(255,255,255,.98) 0 3%,transparent 3.6%),
-      radial-gradient(ellipse at 19% 48%,rgba(218,255,255,.95) 0 2.4%,transparent 3%),
-      radial-gradient(ellipse at 31% 67%,rgba(255,255,255,.96) 0 3.5%,transparent 4.2%),
-      radial-gradient(ellipse at 47% 46%,rgba(231,255,255,.96) 0 2.8%,transparent 3.5%),
-      radial-gradient(ellipse at 63% 62%,rgba(255,255,255,.98) 0 3.2%,transparent 4%),
-      radial-gradient(ellipse at 78% 45%,rgba(220,255,255,.96) 0 2.4%,transparent 3%),
-      radial-gradient(ellipse at 91% 62%,rgba(255,255,255,.98) 0 3.4%,transparent 4%),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 220'%3E%3Cpath fill='%23bdf8ff' fill-opacity='.82' d='M0 100 C110 20 190 175 330 95 S540 35 680 105 S900 175 1040 85 S1270 25 1440 105 L1440 220 L0 220Z'/%3E%3Cpath fill='%23fff' fill-opacity='.96' d='M0 132 C130 60 210 190 350 120 S560 60 700 130 S920 195 1060 115 S1280 60 1440 130 L1440 220 L0 220Z'/%3E%3Cpath fill='%23087eaa' fill-opacity='.42' d='M0 165 C140 100 260 210 420 150 S650 110 800 165 S1050 215 1200 145 S1350 125 1440 160 L1440 220 L0 220Z'/%3E%3C/svg%3E");
-      background-size:100% 100%;background-repeat:no-repeat;animation:splashSurge 3.8s ease-in-out infinite alternate}
-    .sea-splash::after{content:"";position:absolute;inset:8% 0 24%;background:
-      radial-gradient(ellipse at 8% 45%,#fff 0 3px,transparent 4px),
-      radial-gradient(ellipse at 24% 15%,#d8ffff 0 4px,transparent 5px),
-      radial-gradient(ellipse at 39% 55%,#fff 0 3px,transparent 4px),
-      radial-gradient(ellipse at 58% 20%,#e4ffff 0 4px,transparent 5px),
-      radial-gradient(ellipse at 73% 48%,#fff 0 3px,transparent 4px),
-      radial-gradient(ellipse at 88% 18%,#e4ffff 0 4px,transparent 5px);
-      animation:splashSpray 2.3s ease-in-out infinite alternate}
-    @keyframes splashSurge{from{transform:translateX(-1.5%) translateY(5px)}to{transform:translateX(1.5%) translateY(-8px)}}
-    @keyframes splashSpray{from{transform:translateY(9px);opacity:.65}to{transform:translateY(-8px);opacity:1}}
     .hero::before{content:'';position:absolute;inset:-18% -30%;z-index:0;pointer-events:none;background:repeating-linear-gradient(168deg,rgba(110,231,247,.10) 0px,rgba(110,231,247,.10) 2px,transparent 3px,transparent 25px),linear-gradient(180deg,rgba(0,160,195,.08),rgba(0,55,83,.20));background-size:100% 100%,100% 100%;animation:seaDrift 14s ease-in-out infinite alternate}
     @keyframes seaDrift{0%{transform:translate3d(-2%,1%,0) skewY(-1deg);background-position:0 0,0 0}100%{transform:translate3d(2%,-1%,0) skewY(1deg);background-position:0 65px,0 0}}
     .sound-toggle:hover{background:rgba(3,54,77,.85)}
@@ -181,7 +159,6 @@
     <section class="hero" id="home">
     <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">🔊 Play Ocean Sounds</button>
     <audio id="oceanAudio" preload="auto" loop playsinline><source src="./ocean-waves.wav" type="audio/wav"></audio>
-      <div class="sea-splash" aria-hidden="true"></div>
       <div class="hero-inner">
         <div class="eyebrow">Welcome to</div>
         <h1>Makaloka<br>Beach Resort</h1>
