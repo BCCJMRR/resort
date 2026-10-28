@@ -122,7 +122,7 @@
     .chat-launcher .button{box-shadow:0 8px 24px #002b3c30;border-radius:999px 0 0 999px;min-height:54px;min-width:58px;padding:12px 16px;justify-content:flex-start;white-space:nowrap;overflow:hidden;max-width:58px;transition:max-width .28s ease,background .2s ease,padding .2s ease;outline-offset:3px}
     .chat-launcher .button:hover,.chat-launcher .button:focus-visible,.chat-launcher .button:active{max-width:240px;padding:12px 20px}
     /* Touch devices have no hover: show readable chat labels instead of hiding them. */
-    @media(hover:none),(pointer:coarse){.chat-launcher .button{max-width:220px;padding:12px 18px}.chat-launcher .button:hover{max-width:220px;padding:12px 18px}}
+    @media(hover:none),(pointer:coarse){.chat-launcher .button{max-width:58px;padding:12px 16px}.chat-launcher .button.expanded{max-width:240px;padding:12px 20px}}
     @media(prefers-reduced-motion:reduce){.chat-launcher .button{transition:none}}
     .review-summary{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:0 auto 24px;color:var(--navy);font-weight:800}
     .stars{color:#f4ad24;letter-spacing:2px;font-size:1.2rem}
@@ -593,8 +593,8 @@
       openLiveChat?.setAttribute('aria-expanded', String(shouldOpen));
       if (shouldOpen) liveChatMessage?.focus();
     }
-    openLiveChat?.addEventListener('click', () => toggleLiveChat());
-    closeLiveChat?.addEventListener('click', () => toggleLiveChat(false));
+    openLiveChat?.addEventListener('click', () => { toggleLiveChat(); openLiveChat.classList.toggle('expanded', liveChatPanel.classList.contains('open')); });
+    closeLiveChat?.addEventListener('click', () => { toggleLiveChat(false); openLiveChat?.classList.remove('expanded'); });
     sendLiveChat?.addEventListener('click', () => {
       const msg = liveChatMessage?.value.trim();
       if (!msg) { alert('Please type a message first.'); liveChatMessage?.focus(); return; }
