@@ -361,7 +361,7 @@
             <img src="makaloka-website-qr.png" alt="QR code linking to the Makaloka Beach Resort website">
             <a class="button" href="https://makalokamakaloka.vercel.app/" target="_blank" rel="noopener">Open Website ↗</a>
             <div class="app-tip"><strong>📱 Mobile-friendly:</strong> This website adapts to phone screens. On supported browsers, use the browser menu and choose <em>Add to Home screen</em> or <em>Install app</em> for quick access.</div>
-            <p style="margin-top:14px"><a class="button" href="https://makalokamakaloka.vercel.app/" target="_blank" rel="noopener">Get Makaloka Mobile App ↗</a></p>
+            <p style="margin-top:14px"><button class="button" id="installMakalokaApp" type="button">Get Makaloka Mobile App ⬇</button></p>
           </aside>
         </div>
       </div>
@@ -763,6 +763,27 @@
       });
     }
 
+
+    // Install prompt for the Makaloka website app (PWA).
+    let makalokaInstallPrompt = null;
+    const installMakalokaButton = document.getElementById('installMakalokaApp');
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      makalokaInstallPrompt = event;
+      if (installMakalokaButton) installMakalokaButton.textContent = 'Get Makaloka Mobile App ⬇';
+    });
+    installMakalokaButton?.addEventListener('click', async () => {
+      if (makalokaInstallPrompt) {
+        makalokaInstallPrompt.prompt();
+        await makalokaInstallPrompt.userChoice;
+        makalokaInstallPrompt = null;
+      } else {
+        alert('To install Makaloka, open your browser menu (⋮) and choose “Install app” or “Add to Home screen.”');
+      }
+    });
+    window.addEventListener('appinstalled', () => {
+      if (installMakalokaButton) installMakalokaButton.textContent = 'Makaloka App Installed ✓';
+    });
 
     // Account interface: requires Firebase configuration and enabled providers to authenticate real users.
     const accountDialog=document.getElementById('accountDialog'), accountMessage=document.getElementById('accountMessage'), accountForm=document.getElementById('accountForm'); let accountCreateMode=false;
