@@ -68,6 +68,15 @@
     .hero .location{font-size:.98rem;margin-top:20px}
     section{padding:76px 22px}
     .container{max-width:1120px;margin:auto}
+    .map-frame{width:100%;height:300px;margin:18px 0;border-radius:14px;overflow:hidden;border:1px solid #c7e4eb}
+    .map-frame iframe{display:block;width:100%;height:100%;border:0}
+    .around-section{background:linear-gradient(135deg,#effbfc,#fffaf0)}
+    .around-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .around-card{display:block;padding:22px;background:#fff;border:1px solid #d8e9ec;border-radius:18px;box-shadow:0 8px 22px #073b5708;color:var(--navy);text-decoration:none;min-width:0}
+    .around-card>span{font-size:2rem}.around-card h3{margin:10px 0 8px}.around-card p{margin:0 0 14px;color:#526d78}.around-card strong{color:var(--blue)}
+    .around-note{margin-top:20px}
+    @media(max-width:800px){.around-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:520px){.around-grid{grid-template-columns:1fr}.map-frame{height:260px}}
     .section-title{text-align:center;margin:0 auto 38px;max-width:720px}
     .section-title .eyebrow{color:var(--blue)}
     h2{font-size:clamp(2rem,4vw,3rem);font-family:Georgia,serif;color:var(--navy);line-height:1.15;margin:8px 0 14px}
@@ -210,7 +219,7 @@
     <nav class="nav" aria-label="Main navigation">
       <a class="brand" href="#home">MAKALOKA <span>BEACH RESORT</span></a>
       <div class="navlinks">
-        <a href="#home">Home</a><a href="#about">About</a><a href="#story">Our Story</a><a href="#facilities">Facilities</a><a href="#gallery">Gallery</a><a href="#game">Fishing Game</a><a href="#rates">Rates</a><a href="#booking">Book</a><a href="#feedback">Feedback</a><a href="#contact">Contact</a>
+        <a href="#home">Home</a><a href="#about">About</a><a href="#story">Our Story</a><a href="#facilities">Facilities</a><a href="#gallery">Gallery</a><a href="#game">Fishing Game</a><a href="#rates">Rates</a><a href="#booking">Book</a><a href="#feedback">Feedback</a><a href="#around">Around Makaloka</a><a href="#contact">Contact</a>
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="button account-button" id="openAccount" type="button">👤 My Account</button><a class="button" href="#booking">Book Now ↗</a></div>
     </nav>
@@ -376,6 +385,25 @@
       </div>
     </section>
 
+    <section id="around" class="around-section">
+      <div class="container">
+        <div class="section-title">
+          <div class="eyebrow">Helpful places during your stay</div>
+          <h2>Around Makaloka</h2>
+          <p>Find food, essentials, services, and nearby help around the resort. Tap a category to view current places and directions in Google Maps.</p>
+        </div>
+        <div class="around-grid">
+          <a class="around-card" href="https://www.google.com/maps/search/?api=1&query=restaurants+near+Makaloka+Beach+Resort+Tiwasan+Liloan+Cebu" target="_blank" rel="noopener"><span>🍽️</span><h3>Restaurants & Food</h3><p>Browse nearby eateries and restaurants.</p><strong>Find food ↗</strong></a>
+          <a class="around-card" href="https://www.google.com/maps/search/?api=1&query=food+delivery+near+Makaloka+Beach+Resort+Liloan+Cebu" target="_blank" rel="noopener"><span>🛵</span><h3>Food Delivery</h3><p>Search for food delivery options. Availability and delivery coverage may vary; contact the restaurant to confirm they deliver to the resort.</p><strong>Search delivery ↗</strong></a>
+          <a class="around-card" href="https://www.google.com/maps/search/?api=1&query=banks+and+ATMs+near+Makaloka+Beach+Resort+Liloan+Cebu" target="_blank" rel="noopener"><span>🏦</span><h3>Banks & ATMs</h3><p>Locate banks and cash machines.</p><strong>Find banks ↗</strong></a>
+          <a class="around-card" href="https://www.google.com/maps/search/?api=1&query=hospitals+and+clinics+near+Makaloka+Beach+Resort+Liloan+Cebu" target="_blank" rel="noopener"><span>🏥</span><h3>Hospitals & Clinics</h3><p>Search nearby medical facilities.</p><strong>Find medical help ↗</strong></a>
+          <a class="around-card" href="https://www.google.com/maps/search/?api=1&query=police+station+near+Makaloka+Beach+Resort+Liloan+Cebu" target="_blank" rel="noopener"><span>🚓</span><h3>Police Station</h3><p>Find police stations and local assistance.</p><strong>Find police ↗</strong></a>
+          <a class="around-card" href="https://www.google.com/maps/search/?api=1&query=convenience+stores+and+pharmacies+near+Makaloka+Beach+Resort+Liloan+Cebu" target="_blank" rel="noopener"><span>🛒</span><h3>Stores & Pharmacies</h3><p>Look for daily essentials and pharmacies.</p><strong>Find essentials ↗</strong></a>
+        </div>
+        <p class="form-note around-note">Google Maps results may change and are not verified by the resort. Check opening hours, distance, availability, and delivery service directly with each establishment.</p>
+      </div>
+    </section>
+
     <section class="contact" id="contact">
       <div class="container">
         <div class="section-title"><div class="eyebrow">We'd love to hear from you</div><h2>Contact Makaloka</h2><p>Get in touch to ask about rates, cottages, and planning your visit.</p></div>
@@ -394,8 +422,9 @@
             <div style="font-size:2.4rem">📍</div>
             <h3>Find Us in Liloan, Cebu</h3>
             <p>Tiwasan, Catarman, Liloan, Cebu, Philippines</p>
-            <a class="button" href="https://www.google.com/maps/search/?api=1&query=Tiwasan%2C+Catarman%2C+Liloan%2C+Cebu%2C+Philippines" target="_blank" rel="noopener">Open Google Maps ↗</a>
-            <p class="smallprint">Please confirm the exact map pin before publishing promotional materials.</p>
+            <div class="map-frame"><iframe title="Google Maps location for Makaloka Beach Resort" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Makaloka%20Beach%20Resort%2C%20Tiwasan%2C%20Catarman%2C%20Liloan%2C%20Cebu%2C%20Philippines&output=embed"></iframe></div>
+            <a class="button" href="https://www.google.com/maps/search/?api=1&query=Makaloka+Beach+Resort%2C+Tiwasan%2C+Catarman%2C+Liloan%2C+Cebu" target="_blank" rel="noopener">Open Google Maps ↗</a>
+            <p class="smallprint">If the pin needs adjustment, please share the exact Google Maps pin for the resort.</p>
           </div>
         </div>
       </div>
