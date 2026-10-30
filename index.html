@@ -977,6 +977,90 @@
     document.getElementById('googleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Google sign-in must be activated in the resort authentication project.');
     document.getElementById('appleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Apple sign-in requires Apple Developer setup and authentication provider configuration.');
 
+    <button id="thunderToggle" type="button" class="sound-toggle" aria-pressed="false" style="position:relative;display:block;margin:10px auto;background:#34495e;color:#fff">⛈️ Play Thunder Effect</button>
+    <script>
+    // User-controlled thunder ambience. Sound is generated in-browser; no audio asset is required.
+    (() => {
+      const button = document.getElementById('thunderToggle');
+      let ctx = null, active = false, timer = null;
+      function thunderRoll() {
+        if (!ctx || ctx.state !== 'running' || !active) return;
+        const duration = 3.8 + Math.random() * 3.5;
+        const length = Math.floor(ctx.sampleRate * duration);
+        const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < length; i++) {
+          const fade = Math.min(1, i / (ctx.sampleRate * 0.15)) * Math.pow(Math.max(0, 1 - i / length), 1.7);
+          data[i] = (Math.random() * 2 - 1) * fade;
+        }
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        const low = ctx.createBiquadFilter();
+        low.type = 'lowpass';
+        low.frequency.value = 95 + Math.random() * 110;
+        low.Q.value = 0.7;
+        const gain = ctx.createGain();
+        const now = ctx.currentTime;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.22, now + 0.35);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        source.connect(low); low.connect(gain); gain.connect(ctx.destination);
+        source.start(now); source.stop(now + duration);
+        // Add a brief sharp crackle before the low rolling rumble.
+        if (Math.random() > 0.35) {
+          const crack = ctx.createOscillator();
+          const crackGain = ctx.createGain();
+          crack.type = 'sawtooth';
+          crack.frequency.setValueAtTime(1400 + Math.random() * 900, now);
+          crack.frequency.exponentialRampToValueAtTime(120, now + 0.22);
+          crackGain.gain.setValueAtTime(0.0001, now);
+          crackGain.gain.exponentialRampToValueAtTime(0.045, now + 0.012);
+          crackGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+          crack.connect(crackGain); crackGain.connect(ctx.destination);
+          crack.start(now); crack.stop(now + 0.3);
+        }
+      }
+      button.addEventListener('click', async () => {
+        if (!active) {
+          try {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) throw new Error('Audio unavailable');
+            ctx ||= new AC();
+            await ctx.resume();
+            active = true;
+            thunderRoll();
+            timer = window.setTimeout(function repeat() {
+              if (!active) return;
+              thunderRoll();
+              timer = window.setTimeout(repeat, 6500 + Math.random() * 9000);
+            }, 1800);
+            button.textContent = '🔇 Turn Thunder Off';
+            button.setAttribute('aria-pressed', 'true');
+          } catch (e) {
+            button.textContent = '⚠️ Thunder unavailable — tap again';
+          }
+        } else {
+          active = false;
+          if (timer) clearTimeout(timer);
+          timer = null;
+          if (ctx && ctx.state === 'running') await ctx.suspend();
+          button.textContent = '⛈️ Play Thunder Effect';
+          button.setAttribute('aria-pressed', 'false');
+        }
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && active) {
+          active = false;
+          if (timer) clearTimeout(timer);
+          timer = null;
+          if (ctx && ctx.state === 'running') ctx.suspend();
+          button.textContent = '⛈️ Play Thunder Effect';
+          button.setAttribute('aria-pressed', 'false');
+        }
+      });
+    })();
+    </script>
+
     // Lightweight rain and bird decorations; never intercept taps or navigation.
     const weatherOverlay = document.createElement('div');
     weatherOverlay.id = 'weather-overlay';
