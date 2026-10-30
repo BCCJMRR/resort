@@ -977,87 +977,61 @@
     document.getElementById('googleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Google sign-in must be activated in the resort authentication project.');
     document.getElementById('appleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Apple sign-in requires Apple Developer setup and authentication provider configuration.');
 
-    <button id="thunderToggle" type="button" class="sound-toggle" aria-pressed="false" style="position:relative;display:block;margin:10px auto;background:#34495e;color:#fff">⛈️ Play Thunder Effect</button>
+    <style>
+      #lightning-overlay{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0;background:rgba(220,238,255,.92);mix-blend-mode:screen}
+      #lightning-bolt{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+      #lightning-bolt path{fill:none;stroke:#fff;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 18px #bde6ff)}
+      #lightningToggle{position:relative;display:block;margin:10px auto;background:#34495e;color:#fff}
+      @media(prefers-reduced-motion:reduce){#lightning-overlay{display:none}}
+    </style>
+    <button id="lightningToggle" type="button" class="sound-toggle" aria-pressed="false">⚡ Turn Lightning On</button>
+    <div id="lightning-overlay" aria-hidden="true"><svg id="lightning-bolt" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="bolt-path" d="M59 0 L45 27 L55 27 L35 55 L48 53 L25 86 L39 63 L30 65 L47 39 L39 39 Z"/></svg></div>
     <script>
-    // User-controlled thunder ambience. Sound is generated in-browser; no audio asset is required.
+    // Visible, occasional lightning flashes; optional thunder is generated locally by Web Audio.
     (() => {
-      const button = document.getElementById('thunderToggle');
-      let ctx = null, active = false, timer = null;
-      function thunderRoll() {
-        if (!ctx || ctx.state !== 'running' || !active) return;
-        const duration = 3.8 + Math.random() * 3.5;
-        const length = Math.floor(ctx.sampleRate * duration);
-        const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < length; i++) {
-          const fade = Math.min(1, i / (ctx.sampleRate * 0.15)) * Math.pow(Math.max(0, 1 - i / length), 1.7);
-          data[i] = (Math.random() * 2 - 1) * fade;
-        }
-        const source = ctx.createBufferSource();
-        source.buffer = buffer;
-        const low = ctx.createBiquadFilter();
-        low.type = 'lowpass';
-        low.frequency.value = 95 + Math.random() * 110;
-        low.Q.value = 0.7;
-        const gain = ctx.createGain();
-        const now = ctx.currentTime;
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.22, now + 0.35);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-        source.connect(low); low.connect(gain); gain.connect(ctx.destination);
-        source.start(now); source.stop(now + duration);
-        // Add a brief sharp crackle before the low rolling rumble.
-        if (Math.random() > 0.35) {
-          const crack = ctx.createOscillator();
-          const crackGain = ctx.createGain();
-          crack.type = 'sawtooth';
-          crack.frequency.setValueAtTime(1400 + Math.random() * 900, now);
-          crack.frequency.exponentialRampToValueAtTime(120, now + 0.22);
-          crackGain.gain.setValueAtTime(0.0001, now);
-          crackGain.gain.exponentialRampToValueAtTime(0.045, now + 0.012);
-          crackGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
-          crack.connect(crackGain); crackGain.connect(ctx.destination);
-          crack.start(now); crack.stop(now + 0.3);
-        }
-      }
-      button.addEventListener('click', async () => {
-        if (!active) {
-          try {
-            const AC = window.AudioContext || window.webkitAudioContext;
-            if (!AC) throw new Error('Audio unavailable');
-            ctx ||= new AC();
-            await ctx.resume();
-            active = true;
-            thunderRoll();
-            timer = window.setTimeout(function repeat() {
-              if (!active) return;
-              thunderRoll();
-              timer = window.setTimeout(repeat, 6500 + Math.random() * 9000);
-            }, 1800);
-            button.textContent = '🔇 Turn Thunder Off';
-            button.setAttribute('aria-pressed', 'true');
-          } catch (e) {
-            button.textContent = '⚠️ Thunder unavailable — tap again';
+      const button=document.getElementById('lightningToggle');
+      const overlay=document.getElementById('lightning-overlay');
+      const bolt=document.getElementById('lightning-bolt');
+      let enabled=false, timeout=null, flashTimeout=null, audioCtx=null;
+      function flash(){
+        if(!enabled)return;
+        const showBolt=Math.random()>0.35;
+        bolt.style.opacity=showBolt?'1':'0';
+        overlay.style.opacity='1';
+        // Quick multi-pulse flash, like a distant lightning strike.
+        const pulse=[90,65,130,55,180];
+        let elapsed=0;
+        pulse.forEach((duration,i)=>{
+          setTimeout(()=>{if(enabled)overlay.style.opacity=(i%2===0)?'0.92':'0.16';},elapsed);
+          elapsed+=duration;
+        });
+        flashTimeout=setTimeout(()=>{overlay.style.opacity='0';bolt.style.opacity='0';},elapsed+80);
+        // Optional low thunder rumble after the visual flash.
+        try{
+          const AC=window.AudioContext||window.webkitAudioContext;
+          if(AC){
+            audioCtx ||= new AC();
+            if(audioCtx.state==='suspended') audioCtx.resume();
+            const duration=2.6+Math.random()*2.2;
+            const buffer=audioCtx.createBuffer(1,Math.floor(audioCtx.sampleRate*duration),audioCtx.sampleRate);
+            const data=buffer.getChannelData(0);
+            for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,1.8);
+            const src=audioCtx.createBufferSource();src.buffer=buffer;
+            const filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=120;
+            const gain=audioCtx.createGain();gain.gain.value=0.16;
+            src.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);
+            src.start(audioCtx.currentTime+0.25);
           }
-        } else {
-          active = false;
-          if (timer) clearTimeout(timer);
-          timer = null;
-          if (ctx && ctx.state === 'running') await ctx.suspend();
-          button.textContent = '⛈️ Play Thunder Effect';
-          button.setAttribute('aria-pressed', 'false');
-        }
+        }catch(e){}
+        scheduleNext();
+      }
+      function scheduleNext(){if(enabled)timeout=setTimeout(flash,5500+Math.random()*11500);}
+      button.addEventListener('click',()=>{
+        enabled=!enabled;
+        if(enabled){button.textContent='⚡ Turn Lightning Off';button.setAttribute('aria-pressed','true');flash();}
+        else{clearTimeout(timeout);clearTimeout(flashTimeout);overlay.style.opacity='0';bolt.style.opacity='0';button.textContent='⚡ Turn Lightning On';button.setAttribute('aria-pressed','false');if(audioCtx&&audioCtx.state==='running')audioCtx.suspend();}
       });
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden && active) {
-          active = false;
-          if (timer) clearTimeout(timer);
-          timer = null;
-          if (ctx && ctx.state === 'running') ctx.suspend();
-          button.textContent = '⛈️ Play Thunder Effect';
-          button.setAttribute('aria-pressed', 'false');
-        }
-      });
+      document.addEventListener('visibilitychange',()=>{if(document.hidden&&enabled){enabled=false;clearTimeout(timeout);clearTimeout(flashTimeout);overlay.style.opacity='0';bolt.style.opacity='0';button.textContent='⚡ Turn Lightning On';button.setAttribute('aria-pressed','false');if(audioCtx&&audioCtx.state==='running')audioCtx.suspend();}});
     })();
     </script>
 
