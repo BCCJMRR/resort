@@ -238,7 +238,7 @@
 
   <main>
     <section class="hero" id="home">
-    <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">🔊 Play Ocean Sounds</button>
+    <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">🔊 Play Resort Music & Waves</button>
     <audio id="oceanAudio" preload="auto" loop playsinline><source src="./ocean-waves.wav" type="audio/wav"></audio>
       <div class="hero-inner">
         <div class="eyebrow">Welcome to</div>
@@ -791,36 +791,81 @@
         sendLiveChat?.click();
       }
     });
-    // Ocean sound playback: browsers require a user tap before audio can start.
+    // Original gentle resort ambience: soft instrumental pad plus optional shore-wave recording.
+    // Audio starts only after a visitor taps the button (browser autoplay policy).
     const soundToggle = document.getElementById('soundToggle');
     const oceanAudio = document.getElementById('oceanAudio');
-    if (soundToggle && oceanAudio) {
-      oceanAudio.volume = 0.35;
-      oceanAudio.load();
+    let resortMusicContext = null, resortMusicTimer = null, resortMusicStep = 0;
+    let resortMusicNodes = [];
+    function playResortMusicNote() {
+      if (!resortMusicContext || resortMusicContext.state !== 'running') return;
+      const chords = [
+        [261.63, 329.63, 392.00, 493.88],
+        [220.00, 261.63, 329.63, 392.00],
+        [174.61, 220.00, 261.63, 349.23],
+        [196.00, 246.94, 293.66, 392.00]
+      ];
+      const chord = chords[Math.floor(resortMusicStep / 4) % chords.length];
+      const note = chord[resortMusicStep % chord.length];
+      const now = resortMusicContext.currentTime;
+      const oscillator = resortMusicContext.createOscillator();
+      const gain = resortMusicContext.createGain();
+      const filter = resortMusicContext.createBiquadFilter();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(note, now);
+      filter.type = 'lowpass';
+      filter.frequency.value = 900;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.018, now + 1.1);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.8);
+      oscillator.connect(filter); filter.connect(gain); gain.connect(resortMusicContext.destination);
+      oscillator.start(now); oscillator.stop(now + 4.9);
+      resortMusicNodes.push(oscillator);
+      resortMusicNodes = resortMusicNodes.filter(node => node !== oscillator);
+      resortMusicStep++;
+    }
+    async function startResortAmbience() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) throw new Error('Web Audio is not supported in this browser.');
+      resortMusicContext ||= new AudioContextClass();
+      if (resortMusicContext.state === 'suspended') await resortMusicContext.resume();
+      playResortMusicNote();
+      if (!resortMusicTimer) resortMusicTimer = window.setInterval(playResortMusicNote, 1200);
+      if (oceanAudio) {
+        oceanAudio.volume = 0.24;
+        oceanAudio.load();
+        try { await oceanAudio.play(); } catch (_) { /* The original instrumental still plays if the wave file is unavailable. */ }
+      }
+    }
+    function stopResortAmbience() {
+      if (resortMusicTimer) { window.clearInterval(resortMusicTimer); resortMusicTimer = null; }
+      if (resortMusicContext && resortMusicContext.state === 'running') resortMusicContext.suspend();
+      if (oceanAudio) { oceanAudio.pause(); oceanAudio.currentTime = 0; }
+    }
+    if (soundToggle) {
       soundToggle.addEventListener('click', async () => {
-        if (oceanAudio.paused) {
+        const playing = soundToggle.getAttribute('aria-pressed') === 'true';
+        if (playing) {
+          stopResortAmbience();
+          soundToggle.textContent = '🔊 Play Resort Music & Waves';
+          soundToggle.setAttribute('aria-pressed', 'false');
+        } else {
           try {
-            await oceanAudio.play();
-            soundToggle.textContent = '🔇 Stop Ocean Sounds';
+            await startResortAmbience();
+            soundToggle.textContent = '🔇 Stop Resort Music';
             soundToggle.setAttribute('aria-pressed', 'true');
           } catch (error) {
-            soundToggle.textContent = '⚠️ Tap to Play Ocean Sounds';
-            console.error('Ocean audio could not play:', error);
+            soundToggle.textContent = '⚠️ Audio unavailable — tap to retry';
+            console.error('Resort ambience could not start:', error);
           }
-        } else {
-          oceanAudio.pause();
-          oceanAudio.currentTime = 0;
-          soundToggle.textContent = '🔊 Play Ocean Sounds';
-          soundToggle.setAttribute('aria-pressed', 'false');
         }
       });
-      oceanAudio.addEventListener('error', () => {
-        soundToggle.textContent = '⚠️ Ocean audio could not load';
-        soundToggle.setAttribute('aria-pressed', 'false');
-      });
-      oceanAudio.addEventListener('ended', () => {
-        soundToggle.textContent = '🔊 Play Ocean Sounds';
-        soundToggle.setAttribute('aria-pressed', 'false');
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && soundToggle.getAttribute('aria-pressed') === 'true') {
+          stopResortAmbience();
+          soundToggle.textContent = '🔊 Play Resort Music & Waves';
+          soundToggle.setAttribute('aria-pressed', 'false');
+        }
       });
     }
 
