@@ -827,84 +827,124 @@
         sendLiveChat?.click();
       }
     });
-    // Original gentle resort ambience: soft instrumental pad plus optional shore-wave recording.
-    // Audio starts only after a visitor taps the button (browser autoplay policy).
+    // Self-contained Makaloka ambience: soft instrumental pads and synthesized shore waves.
+    // No external audio file is required. Playback begins only after the visitor taps the button.
     const soundToggle = document.getElementById('soundToggle');
-    const oceanAudio = document.getElementById('oceanAudio');
-    let resortMusicContext = null, resortMusicTimer = null, resortMusicStep = 0;
-    let resortMusicNodes = [];
-    function playResortMusicNote() {
+    let resortMusicContext = null;
+    let resortAmbienceNodes = [];
+    let resortChordTimer = null;
+    let resortChordIndex = 0;
+    const resortChords = [
+      [130.81, 164.81, 196.00, 261.63],
+      [110.00, 130.81, 164.81, 220.00],
+      [87.31, 110.00, 130.81, 174.61],
+      [98.00, 123.47, 146.83, 196.00]
+    ];
+    function setResortChord() {
       if (!resortMusicContext || resortMusicContext.state !== 'running') return;
-      const chords = [
-        [261.63, 329.63, 392.00, 493.88],
-        [220.00, 261.63, 329.63, 392.00],
-        [174.61, 220.00, 261.63, 349.23],
-        [196.00, 246.94, 293.66, 392.00]
-      ];
-      const chord = chords[Math.floor(resortMusicStep / 4) % chords.length];
-      const note = chord[resortMusicStep % chord.length];
+      const chord = resortChords[resortChordIndex % resortChords.length];
       const now = resortMusicContext.currentTime;
-      const oscillator = resortMusicContext.createOscillator();
-      const gain = resortMusicContext.createGain();
-      const filter = resortMusicContext.createBiquadFilter();
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(note, now);
-      filter.type = 'lowpass';
-      filter.frequency.value = 900;
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.linearRampToValueAtTime(0.018, now + 1.1);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.8);
-      oscillator.connect(filter); filter.connect(gain); gain.connect(resortMusicContext.destination);
-      oscillator.start(now); oscillator.stop(now + 4.9);
-      resortMusicNodes.push(oscillator);
-      resortMusicNodes = resortMusicNodes.filter(node => node !== oscillator);
-      resortMusicStep++;
+      resortAmbienceNodes.filter(node => node.kind === 'music').forEach((node, index) => {
+        node.osc.frequency.setTargetAtTime(chord[index], now, 2.8);
+      });
+      resortChordIndex++;
     }
     async function startResortAmbience() {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) throw new Error('Web Audio is not supported in this browser.');
+      if (!AudioContextClass) throw new Error('Audio is not supported by this browser.');
       resortMusicContext ||= new AudioContextClass();
-      if (resortMusicContext.state === 'suspended') await resortMusicContext.resume();
-      playResortMusicNote();
-      if (!resortMusicTimer) resortMusicTimer = window.setInterval(playResortMusicNote, 1200);
-      if (oceanAudio) {
-        oceanAudio.volume = 0.24;
-        oceanAudio.load();
-        try { await oceanAudio.play(); } catch (_) { /* The original instrumental still plays if the wave file is unavailable. */ }
+      if (resortMusicContext.state !== 'running') await resortMusicContext.resume();
+      if (resortAmbienceNodes.length === 0) {
+        const ctx = resortMusicContext;
+        const master = ctx.createGain();
+        master.gain.value = 0.8;
+        master.connect(ctx.destination);
+        resortAmbienceNodes.push({kind:'master', node:master});
+
+        // Warm, quiet four-note instrumental pad.
+        const initialChord = resortChords[0];
+        initialChord.forEach((frequency, index) => {
+          const osc = ctx.createOscillator();
+          const voiceGain = ctx.createGain();
+          const toneFilter = ctx.createBiquadFilter();
+          osc.type = 'sine';
+          osc.frequency.value = frequency;
+          toneFilter.type = 'lowpass';
+          toneFilter.frequency.value = 650;
+          voiceGain.gain.value = index === 0 ? 0.055 : 0.035;
+          osc.connect(toneFilter);
+          toneFilter.connect(voiceGain);
+          voiceGain.connect(master);
+          osc.start();
+          resortAmbienceNodes.push({kind:'music',osc,gain:voiceGain});
+        });
+
+        // Soft filtered noise with a slow swell, creating a gentle shoreline wash.
+        const buffer = ctx.createBuffer(1, ctx.sampleRate * 5, ctx.sampleRate);
+        const samples = buffer.getChannelData(0);
+        for (let i = 0; i < samples.length; i++) samples[i] = (Math.random() * 2 - 1) * 0.55;
+        const surf = ctx.createBufferSource();
+        surf.buffer = buffer;
+        surf.loop = true;
+        const surfFilter = ctx.createBiquadFilter();
+        surfFilter.type = 'lowpass';
+        surfFilter.frequency.value = 420;
+        const surfGain = ctx.createGain();
+        surfGain.gain.value = 0.055;
+        surf.connect(surfFilter);
+        surfFilter.connect(surfGain);
+        surfGain.connect(master);
+        surf.start();
+        resortAmbienceNodes.push({kind:'surf',node:surf});
+
+        const lfo = ctx.createOscillator();
+        const lfoDepth = ctx.createGain();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.075;
+        lfoDepth.gain.value = 0.025;
+        lfo.connect(lfoDepth);
+        lfoDepth.connect(surfGain.gain);
+        lfo.start();
+        resortAmbienceNodes.push({kind:'lfo',node:lfo});
       }
+      setResortChord();
+      if (!resortChordTimer) resortChordTimer = window.setInterval(setResortChord, 12000);
     }
     function stopResortAmbience() {
-      if (resortMusicTimer) { window.clearInterval(resortMusicTimer); resortMusicTimer = null; }
+      if (resortChordTimer) { window.clearInterval(resortChordTimer); resortChordTimer = null; }
       if (resortMusicContext && resortMusicContext.state === 'running') resortMusicContext.suspend();
-      if (oceanAudio) { oceanAudio.pause(); oceanAudio.currentTime = 0; }
     }
     if (soundToggle) {
       soundToggle.addEventListener('click', async () => {
         const playing = soundToggle.getAttribute('aria-pressed') === 'true';
         if (playing) {
           stopResortAmbience();
-          soundToggle.textContent = '🔊 Play Resort Music & Waves';
+          soundToggle.textContent = '🔊 Play Makaloka Ambient Soundtrack';
           soundToggle.setAttribute('aria-pressed', 'false');
         } else {
+          soundToggle.disabled = true;
+          soundToggle.textContent = '♪ Starting resort sounds…';
           try {
             await startResortAmbience();
-            soundToggle.textContent = '🔇 Stop Resort Music';
+            soundToggle.textContent = '🔇 Stop Ambient Soundtrack';
             soundToggle.setAttribute('aria-pressed', 'true');
           } catch (error) {
-            soundToggle.textContent = '⚠️ Audio unavailable — tap to retry';
-            console.error('Resort ambience could not start:', error);
+            soundToggle.textContent = '⚠️ Sound unavailable — tap to retry';
+            soundToggle.setAttribute('aria-pressed', 'false');
+            console.error('Makaloka ambience could not start:', error);
+          } finally {
+            soundToggle.disabled = false;
           }
         }
       });
       document.addEventListener('visibilitychange', () => {
         if (document.hidden && soundToggle.getAttribute('aria-pressed') === 'true') {
           stopResortAmbience();
-          soundToggle.textContent = '🔊 Play Resort Music & Waves';
+          soundToggle.textContent = '🔊 Play Makaloka Ambient Soundtrack';
           soundToggle.setAttribute('aria-pressed', 'false');
         }
       });
     }
-
 
     // Install prompt for the Makaloka website app (PWA).
     let makalokaInstallPrompt = null;
