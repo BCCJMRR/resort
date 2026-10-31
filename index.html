@@ -77,7 +77,15 @@
     .sound-toggle:hover{background:rgba(3,54,77,.85)}
     .hero-inner{position:relative;z-index:1;max-width:820px;text-shadow:0 2px 16px #002b3c70}
     .eyebrow{text-transform:uppercase;letter-spacing:.22em;font-size:.82rem;font-weight:800}
-    h1{font-size:clamp(3.2rem,9vw,7rem);line-height:1.04;margin:16px 0;font-family:"Kaushan Script",cursive;font-weight:400}\n    .hero-brand-name{display:block;font-family:"Kaushan Script",cursive;font-size:1.12em;font-weight:400;letter-spacing:0;line-height:1.18}\n    .hero-subtitle{display:block;font-family:Arial,Helvetica,sans-serif;font-size:.28em;font-weight:800;letter-spacing:.28em;text-transform:uppercase;margin-top:14px}
+    h1{font-size:clamp(3.2rem,9vw,7rem);line-height:1.04;margin:16px 0;font-family:Georgia,serif;font-weight:700}
+    .hero-logo{width:100%;margin:0 auto 8px;font-size:1rem;font-family:Arial,Helvetica,sans-serif;font-weight:400;text-shadow:none}
+    .hero-brand-name{display:block;font-family:"Kaushan Script",cursive;font-size:clamp(4.2rem,12vw,8.4rem);font-weight:400;letter-spacing:0;line-height:1.05;color:#fff;white-space:nowrap}
+    .hero-wave-mark{display:block;width:min(88%,540px);height:auto;margin:-2px auto 8px;overflow:visible}
+    .hero-wave-mark path{fill:none;stroke:#69d9ed;stroke-width:8;stroke-linecap:round}
+    .hero-subtitle{display:block;font-family:Arial,Helvetica,sans-serif;font-size:clamp(1.15rem,3vw,2rem);font-weight:700;letter-spacing:.34em;text-transform:uppercase;margin:10px 0 22px;padding-left:.34em;color:#fff}
+    .hero-tagline{font-family:"Kaushan Script",cursive;font-size:clamp(1.7rem,4.6vw,3.2rem);line-height:1.25;margin:0 auto 2px;color:#fff}
+    .hero-tagline-underline{display:block;width:min(58%,380px);height:8px;margin:0 auto 20px;border-bottom:4px solid #13a9d2;border-radius:50%;transform:rotate(-1deg)}
+    .hero-description{font-size:clamp(1rem,2vw,1.2rem);max-width:700px;margin:0 auto 24px}
     .hero p{font-size:clamp(1rem,2vw,1.25rem);max-width:700px;margin:0 auto 27px}
     .hero .location{font-size:.98rem;margin-top:20px}
     section{padding:76px 22px}
@@ -256,11 +264,15 @@
     <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">🔊 Play Resort Music & Waves</button>
     <audio id="oceanAudio" preload="auto" loop playsinline><source src="./ocean-waves.wav" type="audio/wav"></audio>
       <div class="hero-inner">
-        <div class="eyebrow">Welcome to</div>
-        <h1><span class="hero-brand-name">Makaloka</span><span class="hero-subtitle">Beach Resort</span></h1>
-        <p>Your escape to the beauty of the beach.</p>
-        <p>Spend quality time with family and friends at our coastal getaway in Liloan, Cebu.</p>
-        <a class="button light" href="#contact">Plan Your Visit&nbsp; →</a>
+        <h1 class="hero-logo">
+          <span class="hero-brand-name">Makaloka</span>
+          <svg class="hero-wave-mark" viewBox="0 0 520 48" aria-hidden="true"><path d="M5 25 C85 -2 125 4 190 25 S300 47 365 23 S455 3 515 23" /><path d="M95 32 C155 13 205 15 260 31 S360 43 420 28 S480 18 510 29" /></svg>
+          <span class="hero-subtitle">BEACH RESORT</span>
+        </h1>
+        <p class="hero-tagline">Where Every Wave Brings Peace</p>
+        <span class="hero-tagline-underline" aria-hidden="true"></span>
+        <p class="hero-description">Spend quality time with family and friends at our coastal getaway in Liloan, Cebu.</p>
+        <a class="button light" href="#contact">Explore Our Resort&nbsp; →</a>
         <div class="location">⌖ Tiwasan, Catarman, Liloan, Cebu, Philippines</div>
       </div>
     </section>
