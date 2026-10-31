@@ -226,6 +226,16 @@
     .game-promo{background:#effbfb;border-radius:16px;padding:18px;color:var(--navy)}.game-promo p{margin:8px 0}
     @media(max-width:520px){.game-ocean{height:280px}.catch-item{font-size:2.4rem}}
     @media(prefers-reduced-motion:reduce){.catch-item{animation:none}}
+
+    /* Lightning is layered only over the main beach hero image. */
+    .hero{isolation:isolate}
+    .lightning-overlay{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background:rgba(220,238,255,.82);mix-blend-mode:screen;transition:opacity .04s}
+    .lightning-overlay svg{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+    .lightning-overlay path{fill:none;stroke:#fff;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px #bde6ff) drop-shadow(0 0 7px #fff)}
+    .lightning-toggle{position:absolute;left:22px;top:22px;z-index:4;border:1px solid rgba(255,255,255,.8);background:rgba(3,54,77,.72);color:#fff;border-radius:999px;padding:10px 15px;font-weight:800;cursor:pointer;backdrop-filter:blur(5px)}
+    .lightning-toggle:hover{background:rgba(3,54,77,.92)}
+    @media(max-width:520px){.lightning-toggle{left:12px;top:68px;padding:9px 12px;font-size:.82rem}}
+    @media(prefers-reduced-motion:reduce){.lightning-overlay{display:none}}
   </style>
 </head>
 <body>
@@ -241,6 +251,8 @@
 
   <main>
     <section class="hero" id="home">
+    <button class="lightning-toggle" id="lightningToggle" type="button" aria-pressed="false">⚡ Enable Lightning + Thunder</button>
+    <div class="lightning-overlay" id="lightningOverlay" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path id="lightningBolt" d="M62 0 L51 22 L59 22 L43 45 L53 43 L29 77 L42 54 L34 56 L50 34 L43 34 Z M43 54 L48 67 L39 83"/></svg></div>
     <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">🔊 Play Resort Music & Waves</button>
     <audio id="oceanAudio" preload="auto" loop playsinline><source src="./ocean-waves.wav" type="audio/wav"></audio>
       <div class="hero-inner">
@@ -980,63 +992,7 @@
     document.getElementById('googleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Google sign-in must be activated in the resort authentication project.');
     document.getElementById('appleSignIn')?.addEventListener('click',()=>accountMessage.textContent='Apple sign-in requires Apple Developer setup and authentication provider configuration.');
 
-    <style>
-      #lightning-overlay{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0;background:rgba(220,238,255,.92);mix-blend-mode:screen}
-      #lightning-bolt{position:absolute;inset:0;width:100%;height:100%;opacity:0}
-      #lightning-bolt path{fill:none;stroke:#fff;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 18px #bde6ff)}
-      #lightningToggle{position:relative;display:block;margin:10px auto;background:#34495e;color:#fff}
-      @media(prefers-reduced-motion:reduce){#lightning-overlay{display:none}}
-    </style>
-    <button id="lightningToggle" type="button" class="sound-toggle" aria-pressed="false">⚡ Turn Lightning On</button>
-    <div id="lightning-overlay" aria-hidden="true"><svg id="lightning-bolt" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="bolt-path" d="M59 0 L45 27 L55 27 L35 55 L48 53 L25 86 L39 63 L30 65 L47 39 L39 39 Z"/></svg></div>
-    <script>
-    // Visible, occasional lightning flashes; optional thunder is generated locally by Web Audio.
-    (() => {
-      const button=document.getElementById('lightningToggle');
-      const overlay=document.getElementById('lightning-overlay');
-      const bolt=document.getElementById('lightning-bolt');
-      let enabled=false, timeout=null, flashTimeout=null, audioCtx=null;
-      function flash(){
-        if(!enabled)return;
-        const showBolt=Math.random()>0.35;
-        bolt.style.opacity=showBolt?'1':'0';
-        overlay.style.opacity='1';
-        // Quick multi-pulse flash, like a distant lightning strike.
-        const pulse=[90,65,130,55,180];
-        let elapsed=0;
-        pulse.forEach((duration,i)=>{
-          setTimeout(()=>{if(enabled)overlay.style.opacity=(i%2===0)?'0.92':'0.16';},elapsed);
-          elapsed+=duration;
-        });
-        flashTimeout=setTimeout(()=>{overlay.style.opacity='0';bolt.style.opacity='0';},elapsed+80);
-        // Optional low thunder rumble after the visual flash.
-        try{
-          const AC=window.AudioContext||window.webkitAudioContext;
-          if(AC){
-            audioCtx ||= new AC();
-            if(audioCtx.state==='suspended') audioCtx.resume();
-            const duration=2.6+Math.random()*2.2;
-            const buffer=audioCtx.createBuffer(1,Math.floor(audioCtx.sampleRate*duration),audioCtx.sampleRate);
-            const data=buffer.getChannelData(0);
-            for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,1.8);
-            const src=audioCtx.createBufferSource();src.buffer=buffer;
-            const filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=120;
-            const gain=audioCtx.createGain();gain.gain.value=0.16;
-            src.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);
-            src.start(audioCtx.currentTime+0.25);
-          }
-        }catch(e){}
-        scheduleNext();
-      }
-      function scheduleNext(){if(enabled)timeout=setTimeout(flash,5500+Math.random()*11500);}
-      button.addEventListener('click',()=>{
-        enabled=!enabled;
-        if(enabled){button.textContent='⚡ Turn Lightning Off';button.setAttribute('aria-pressed','true');flash();}
-        else{clearTimeout(timeout);clearTimeout(flashTimeout);overlay.style.opacity='0';bolt.style.opacity='0';button.textContent='⚡ Turn Lightning On';button.setAttribute('aria-pressed','false');if(audioCtx&&audioCtx.state==='running')audioCtx.suspend();}
-      });
-      document.addEventListener('visibilitychange',()=>{if(document.hidden&&enabled){enabled=false;clearTimeout(timeout);clearTimeout(flashTimeout);overlay.style.opacity='0';bolt.style.opacity='0';button.textContent='⚡ Turn Lightning On';button.setAttribute('aria-pressed','false');if(audioCtx&&audioCtx.state==='running')audioCtx.suspend();}});
-    })();
-    </script>
+    // Lightning effect is initialized below, inside the main page script.
 
     // Lightweight rain and bird decorations; never intercept taps or navigation.
     const weatherOverlay = document.createElement('div');
@@ -1060,6 +1016,79 @@
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
     }
-  </script>
+  
+    // Realistic layered lightning flashes and a low rolling thunder effect.
+    (() => {
+      const toggle = document.getElementById('lightningToggle');
+      const overlay = document.getElementById('lightningOverlay');
+      const bolt = document.getElementById('lightningBolt');
+      if (!toggle || !overlay || !bolt) return;
+      let active = false, nextStrike = null, audio = null;
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      function thunder() {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        audio ||= new AC();
+        if (audio.state === 'suspended') audio.resume();
+        const ctx = audio, duration = 4.8;
+        const length = Math.floor(ctx.sampleRate * duration);
+        const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < length; i++) {
+          const t = i / length;
+          const envelope = Math.pow(1 - t, 2.3) * (0.55 + 0.45 * Math.sin(t * 34));
+          data[i] = (Math.random() * 2 - 1) * envelope;
+        }
+        const source = ctx.createBufferSource(); source.buffer = buffer;
+        const low = ctx.createBiquadFilter(); low.type = 'lowpass'; low.frequency.value = 145;
+        const rumble = ctx.createBiquadFilter(); rumble.type = 'peaking'; rumble.frequency.value = 65; rumble.Q.value = 0.8; rumble.gain.value = 8;
+        const gain = ctx.createGain(); gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.42, ctx.currentTime + 0.16);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        source.connect(low); low.connect(rumble); rumble.connect(gain); gain.connect(ctx.destination);
+        source.start();
+      }
+      async function strike() {
+        if (!active) return;
+        const flashes = [90, 55, 125, 70, 210];
+        for (let i = 0; i < flashes.length; i++) {
+          if (!active) break;
+          overlay.style.opacity = i % 2 === 0 ? '0.95' : '0.12';
+          bolt.style.opacity = i === 0 || i === 2 ? '1' : '0.35';
+          await wait(flashes[i]);
+        }
+        overlay.style.opacity = '0'; bolt.style.opacity = '0';
+        if (active) thunder();
+        if (active) nextStrike = setTimeout(strike, 7000 + Math.random() * 11000);
+      }
+      toggle.addEventListener('click', async () => {
+        active = !active;
+        toggle.setAttribute('aria-pressed', String(active));
+        if (active) {
+          toggle.textContent = '⚡ Turn Lightning Off';
+          try {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) { audio ||= new AC(); await audio.resume(); }
+          } catch (e) {}
+          strike();
+        } else {
+          clearTimeout(nextStrike);
+          overlay.style.opacity = '0'; bolt.style.opacity = '0';
+          if (audio && audio.state === 'running') audio.suspend();
+          toggle.textContent = '⚡ Enable Lightning + Thunder';
+        }
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && active) {
+          active = false; clearTimeout(nextStrike);
+          overlay.style.opacity = '0'; bolt.style.opacity = '0';
+          toggle.setAttribute('aria-pressed', 'false');
+          toggle.textContent = '⚡ Enable Lightning + Thunder';
+          if (audio && audio.state === 'running') audio.suspend();
+        }
+      });
+    })();
+
+</script>
 </body>
 </html>
